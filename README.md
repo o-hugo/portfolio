@@ -6,10 +6,10 @@
 
 ## 👋 Sobre Mim
 
-Sou **bacharel em Estatística** apaixonado por transformar dados brutos em insights acionáveis. Atualmente sou **Vice-Presidente do Centro Acadêmico do Curso de Estatística (2025)**, onde trabalho na divulgação da importância da estatística e análise de dados para tomadas de decisão baseadas em evidência.
+Sou **bacharelando em Estatística** na Universidade Federal do Amazonas - **UFAM**, apaixonado por transformar dados brutos em insights acionáveis, com isso trabalho na divulgação da importância da estatística e análise de dados para tomadas de decisão baseadas em evidência.
 
 ### 📚 Formação Acadêmica
-- **Bacharelado em Estatística** (em andamento)
+- **Bacharelando em Estatística** (em andamento)
 - **Vice-Presidente do Centro Acadêmico de Estatística** (2025)
 - Formação contínua em ferramentas de dados e análise
 
@@ -30,7 +30,7 @@ Sou **bacharel em Estatística** apaixonado por transformar dados brutos em insi
 - **R** (análise estatística, ggplot2)
 
 ### Ferramentas & Tecnologias
-- **Processamento de Dados**: Pandas, Polars, DuckDB
+- **Processamento de Dados**: Pandas, DuckDB
 - **Visualização**: Matplotlib, Seaborn, Plotly
 - **Estatística**: análise exploratória, testes de hipótese, regressão
 - **Versionamento**: Git/GitHub
@@ -41,7 +41,6 @@ Sou **bacharel em Estatística** apaixonado por transformar dados brutos em insi
 - ✅ Data Cleaning & Validation
 - ✅ Exploratory Data Analysis (EDA)
 - ✅ Boas práticas em qualidade de dados
-- ✅ Anonimização e segurança de dados
 
 ---
 
@@ -53,8 +52,8 @@ data-science-portfolio/
 ├── 📓 01_SQL_Python_ETL.ipynb
 │   └── ETL de dados médicos: extração, transformação e limpeza
 │
-├── 02_Analise_Exploratoria_[PROJECT_NAME]/ (em desenvolvimento)
-│   └── Análise detalhada e insights
+├── 02_Python_Sklearn_Classification.ipynb
+│   └── Classificação e previsão de evasão e permanência de alunos baseados em dados comportamentais
 │
 ├── 03_Dashboard_BI_[PROJECT_NAME]/ (em desenvolvimento)
 │   └── Visualizações interativas
@@ -74,9 +73,9 @@ data-science-portfolio/
 Pipeline completo de ETL para consolidar dados de múltiplos arquivos Excel, aplicando filtros inteligentes e removendo duplicatas.
 
 #### Dataset
-- **Estrutura Original**: 11 arquivos Excel com dados de registros médicos
-- **Registros Iniciais**: ~265 registros brutos
-- **Registros Finais**: 87 registros únicos e limpos
+- **Estrutura Original**: 57 arquivos Excel com dados de registros médicos
+- **Registros Iniciais**: ~1.138 registros brutos
+- **Registros Finais**: 307 registros únicos e limpos
 
 #### Processo de Anonimização
 
@@ -84,7 +83,7 @@ Todos os dados foram **completamente anonimizados** para garantir privacidade:
 
 | Campo Original | Método de Anonimização | Exemplo |
 |---|---|---|
-| **Nomes completos** | ✅ Substituído por ID numérico | `Hirailton Alves Batista` → `PAT_01_042` |
+| **Nomes completos** | ✅ Substituído por ID numérico | `João Silva` → `PAT_01_042` |
 | **Data de nascimento** | ✅ Convertida para faixa etária | `1979-09-11` → `71-80` |
 | **Número de prontuário** | ✅ Mascarado com padrão genérico | `1015361-00` → `PRN_3542187` |
 | **Dados de localização** | ✅ Removidos | Removido |
@@ -102,13 +101,13 @@ Todos os dados foram **completamente anonimizados** para garantir privacidade:
 
 | # | Etapa | Ação | Entrada | Saída |
 |---|-------|------|---------|-------|
-| 1 | **Extração** | Leitura de 11 arquivos Excel | 11 .xlsx | 265 registros |
-| 2 | **Consolidação** | Junção em DataFrame único | 11 DataFrames | 1 DataFrame |
-| 3 | **Filtro Inicial** | Apenas registros com `NEW_CASES_COUNT > 0` | 265 | 180 |
-| 4 | **Filtro Diagnóstico** | Regex para `LLA\|LMA\|LLC\|LMC` | 180 | 92 |
-| 5 | **Detecção Duplicatas** | Identifica pacientes duplicados | 92 | 5 duplicatas |
-| 6 | **Deduplicação** | ROW_NUMBER() OVER PARTITION | 92 | 87 |
-| 7 | **Validação** | Verificação de integridade | 87 | ✅ 87 válidos |
+| 1 | **Extração** | Leitura de 57 arquivos Excel | 57 .xls | 1.138 registros |
+| 2 | **Consolidação** | Junção em DataFrame único | 57 DataFrames → 1 DataFrame |
+| 3 | **Filtro Inicial** | Apenas registros com `NEW_CASES_COUNT > 0` | 769 |
+| 4 | **Filtro Diagnóstico** | Regex para `LLA\|LMA\|LLC\|LMC` | 312 |
+| 5 | **Detecção Duplicatas** | Identifica pacientes duplicados |
+| 6 | **Deduplicação** | ROW_NUMBER() OVER PARTITION |
+| 7 | **Validação** | Verificação de integridade | ✅ 307 válidos |
 | 8 | **Exportação** | CSV + Excel | 87 | `healthcare_data_cleaned.*` |
 
 #### Análises Incluídas
@@ -148,26 +147,7 @@ Os projetos esperam arquivos no formato:
 - 📝 Colunas esperadas: PATIENT_ID, RECORD_DATE, DIAGNOSIS, etc.
 
 ---
-
-## 📊 Exemplo de Dados Anonimizados
-
-Antes (Confidencial):
 ```
-| NOME                    | DATA_NASCIMENTO | PRONTUÁRIO | CONVÊNIO |
-|-------------------------|-----------------|------------|----------|
-| Hirailton Alves Batista | 1979-09-11      | 1015361-00 | SUS      |
-| Izeilson Lima Silva     | 1998-02-23      | 1015356-00 | SUS      |
-```
-
-Depois (Anonimizado):
-```
-| PATIENT_ID  | BIRTH_AGE_GROUP | RECORD_NUMBER | MEDICAL_INSURANCE |
-|-------------|-----------------|---------------|-------------------|
-| PAT_01_042  | 71-80           | PRN_3542187   | SUS               |
-| PAT_02_015  | 21-30           | PRN_8761245   | SUS               |
-```
-
-✅ **Resultado**: 100% anonimizado, mantendo a estrutura para análise
 
 ---
 
