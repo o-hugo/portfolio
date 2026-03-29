@@ -1,0 +1,5 @@
+* corrigir a questão de não haver gênero no primeiro exemplo, criar uma situação
+    para uma solução para verificar gênero por nome.
+
+* no readme, na parte do projeto 01 temos uma tabela que tem que ser preenchida e verificada
+    a partir notebok.

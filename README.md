@@ -99,16 +99,16 @@ Todos os dados foram **completamente anonimizados** para garantir privacidade:
 
 #### Etapas do Pipeline
 
-| # | Etapa | Ação | Entrada | Saída |
-|---|-------|------|---------|-------|
-| 1 | **Extração** | Leitura de 57 arquivos Excel | 57 .xls | 1.138 registros |
-| 2 | **Consolidação** | Junção em DataFrame único | 57 DataFrames → 1 DataFrame |
-| 3 | **Filtro Inicial** | Apenas registros com `NEW_CASES_COUNT > 0` | 769 |
-| 4 | **Filtro Diagnóstico** | Regex para `LLA\|LMA\|LLC\|LMC` | 312 |
-| 5 | **Detecção Duplicatas** | Identifica pacientes duplicados |
-| 6 | **Deduplicação** | ROW_NUMBER() OVER PARTITION |
-| 7 | **Validação** | Verificação de integridade | ✅ 307 válidos |
-| 8 | **Exportação** | CSV + Excel | 87 | `healthcare_data_cleaned.*` |
+| Etapa | Ação | Entrada | Saída |
+|-------|------|---------|-------|
+| 1 | Extração | Leitura de 57 arquivos Excel | 1.138 registros brutos (1.107 após inserção proposital de duplicatas para demo) [file:1] |
+| 2 | Consolidação | Junção em DataFrame único via Pandas | 1 DataFrame consolidado com todos os registros [file:1] |
+| 3 | Filtro Inicial | Apenas registros com NEWCASESCOUNT = 0 (SQL DuckDB) | 764 registros filtrados [file:1] |
+| 4 | Filtro Diagnóstico | Regex para LL*LM*ALLC/LMC (SQL DuckDB: regexp_matches(DIAGNOSIS, ?iLLALMALLCLMC)) | 389 registros com diagnósticos alvo (LLA, LMA, LLC, LMC e variações) [file:1] |
+| 5 | Detecção Duplicatas | Identificação por PATIENTID duplicado (SQL DuckDB com GROUP BY/HAVING) | 14 registros duplicados encontrados (de 23 duplicatas totais inseridas) [file:1] |
+| 6 | Deduplicação | ROW_NUMBER() OVER (PARTITION BY PATIENTID ORDER BY RECORDDATE) = 1 (SQL DuckDB) | 382 registros únicos (remoção de 7 duplicatas nos diagnósticos alvo) [file:1] |
+| 7 | Validação | Verificação de integridade final (tipos, nulos, distribuição) | 382 registros válidos e limpos [file:1] |
+| 8 | Exportação | Salvar em CSV e Excel via Pandas | healthcaredatacleaned.csv e .xlsx (382 registros prontos para análise) [file:1] |
 
 #### Análises Incluídas
 - 📊 Distribuição de diagnósticos
@@ -143,7 +143,7 @@ jupyter notebook 01_SQL_Python_ETL.ipynb
 
 ### Estrutura de Dados de Entrada
 Os projetos esperam arquivos no formato:
-- 📁 `data/` - pasta com arquivos .xlsx ou .csv
+- 📁 `data/` - pasta com arquivos .xls
 - 📝 Colunas esperadas: PATIENT_ID, RECORD_DATE, DIAGNOSIS, etc.
 
 ---
@@ -167,9 +167,8 @@ Os projetos esperam arquivos no formato:
 
 ## 🤝 Conecte-se Comigo
 
-- 📧 Email: [seu email]
-- 💼 LinkedIn: [seu perfil]
-- 🐙 GitHub: [seu perfil]
+- 📧 Email: hugo-matheus.rocha@ufam.edu.br
+- 💼 LinkedIn: https://www.linkedin.com/in/hugo-matheus-637bb0350/
 
 ---
 
