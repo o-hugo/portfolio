@@ -101,14 +101,14 @@ Todos os dados foram **completamente anonimizados** para garantir privacidade:
 
 | Etapa | Ação | Entrada | Saída |
 |-------|------|---------|-------|
-| 1 | Extração | Leitura de 57 arquivos Excel | 1.138 registros brutos (1.107 após inserção proposital de duplicatas para demo) [file:1] |
-| 2 | Consolidação | Junção em DataFrame único via Pandas | 1 DataFrame consolidado com todos os registros [file:1] |
-| 3 | Filtro Inicial | Apenas registros com NEWCASESCOUNT = 0 (SQL DuckDB) | 764 registros filtrados [file:1] |
-| 4 | Filtro Diagnóstico | Regex para LL*LM*ALLC/LMC (SQL DuckDB: regexp_matches(DIAGNOSIS, ?iLLALMALLCLMC)) | 389 registros com diagnósticos alvo (LLA, LMA, LLC, LMC e variações) [file:1] |
-| 5 | Detecção Duplicatas | Identificação por PATIENTID duplicado (SQL DuckDB com GROUP BY/HAVING) | 14 registros duplicados encontrados (de 23 duplicatas totais inseridas) [file:1] |
-| 6 | Deduplicação | ROW_NUMBER() OVER (PARTITION BY PATIENTID ORDER BY RECORDDATE) = 1 (SQL DuckDB) | 382 registros únicos (remoção de 7 duplicatas nos diagnósticos alvo) [file:1] |
-| 7 | Validação | Verificação de integridade final (tipos, nulos, distribuição) | 382 registros válidos e limpos [file:1] |
-| 8 | Exportação | Salvar em CSV e Excel via Pandas | healthcaredatacleaned.csv e .xlsx (382 registros prontos para análise) [file:1] |
+| 1 | Extração | Leitura de 57 arquivos Excel | 1.138 registros brutos (1.107 após inserção proposital de duplicatas para demo) |
+| 2 | Consolidação | Junção em DataFrame único via Pandas | 1 DataFrame consolidado com todos os registros |
+| 3 | Filtro Inicial | Apenas registros com NEWCASESCOUNT = 0 (SQL DuckDB) | 764 registros filtrados |
+| 4 | Filtro Diagnóstico | Regex para LLA/LMA/LLC/LMC (SQL DuckDB: regexp_matches(DIAGNOSIS, ?iLLALMALLCLMC)) | 389 registros com diagnósticos alvo (LLA, LMA, LLC, LMC e variações) |
+| 5 | Detecção Duplicatas | Identificação por PATIENTID duplicado (SQL DuckDB com GROUP BY/HAVING) | 14 registros duplicados encontrados (de 23 duplicatas totais inseridas) |
+| 6 | Deduplicação | ROW_NUMBER() OVER (PARTITION BY PATIENTID ORDER BY RECORDDATE) = 1 (SQL DuckDB) | 382 registros únicos (remoção de 7 duplicatas nos diagnósticos alvo) |
+| 7 | Validação | Verificação de integridade final (tipos, nulos, distribuição) | 382 registros válidos e limpos |
+| 8 | Exportação | Salvar em CSV e Excel via Pandas | healthcaredatacleaned.csv e .xlsx (382 registros prontos para análise) |
 
 #### Análises Incluídas
 - 📊 Distribuição de diagnósticos
