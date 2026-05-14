@@ -3,153 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hugo Matheus Rocha - Portfolio de Estatística e Dados</title>
+    <title>Hugo Matheus Rocha - Portfolio</title>
     <style>
         :root {
             --primary: #7e141a;
-            --secondary: #4a7db5;
-            --bg: #f4f1ed;
+            --bg: #ffffff;
+            --secondary-bg: #f9f7f5;
             --text: #1a1108;
-            --muted: #7a6b5a;
+            --muted: #5a5045;
+            --border: #e6e0d9;
         }
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
             margin: 0; 
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            line-height: 1.6;
         }
-        header {
-            width: 100%;
-            background: white;
-            padding: 2rem 0;
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
             text-align: center;
-            border-bottom: 4px solid var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
-        header p { margin: 0.5rem 0 0; color: var(--muted); font-weight: 500; }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin: 2rem 0;
-        }
-        .tab-btn {
-            padding: 10px 20px;
-            border: none;
-            background: #e0ddd8;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
         }
 
-        .content-section {
-            display: none;
-            width: 90%;
-            max-width: 800px;
-            animation: fadeIn 0.4s ease;
-        }
-        .content-section.active { display: block; }
+        header { margin-bottom: 4rem; }
+        header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.2rem; letter-spacing: -0.02em; }
+        header p { color: var(--muted); font-size: 0.95rem; margin: 0; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card {
-            background: white;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border-left: 5px solid var(--primary);
+        .about-section {
+            text-align: left;
+            margin-bottom: 5rem;
         }
-        .card h3 { margin-top: 0; color: var(--primary); }
-        .card p { color: var(--muted); line-height: 1.6; }
+        .about-section h2 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); margin-bottom: 1.5rem; text-align: center; }
+        .about-section p { font-size: 1.05rem; color: var(--text); margin-bottom: 1.2rem; text-align: justify; }
+
+        .projects-section { text-align: left; }
+        .projects-section h2 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); margin-bottom: 3rem; text-align: center; }
+
+        .project-card {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .project-card:last-child { border-bottom: none; }
         
-        .btn {
-            display: inline-block;
-            padding: 10px 18px;
-            background-color: var(--primary);
-            color: white;
-            text-decoration: none;
+        .project-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--text); }
+        .project-card p { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.5rem; text-align: justify; }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tech-tag {
+            background: var(--secondary-bg);
+            padding: 4px 10px;
             border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .links {
+            display: flex;
+            gap: 1rem;
+        }
+        .link-btn {
             font-size: 0.9rem;
             font-weight: 600;
-            transition: 0.3s;
+            text-decoration: none;
+            color: var(--primary);
+            transition: opacity 0.2s;
         }
-        .btn:hover { background-color: #9e1a22; }
-        .btn-blue { background-color: var(--secondary); }
-        .btn-blue:hover { background-color: #3a6da5; }
+        .link-btn:hover { opacity: 0.7; }
+        .link-btn.external { color: #4a7db5; }
 
-        footer { margin-top: auto; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 2rem 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Hugo Matheus Rocha</h1>
-    <p>Bacharelando em Estatística - UFAM</p>
-</header>
+<div class="container">
+    <header>
+        <h1>Hugo Matheus Rocha</h1>
+        <p>Bacharelando em Estatística · UFAM</p>
+    </header>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="showTab('dash')">Dashboards</button>
-    <button class="tab-btn" onclick="showTab('notebooks')">Notebooks</button>
-    <button class="tab-btn" onclick="showTab('about')">Sobre</button>
+    <section class="about-section">
+        <h2>Sobre Mim</h2>
+        <p>
+            Sou bacharelando em Estatística na Universidade Federal do Amazonas (UFAM), apaixonado por transformar dados brutos em insights acionáveis. Trabalho na divulgação da importância da estatística e análise de dados para tomadas de decisão baseadas em evidência, unindo rigor acadêmico com soluções práticas de tecnologia.
+        </p>
+        <p>
+            Com foco em Engenharia de Dados e Business Intelligence, busco constantemente otimizar processos de coleta e limpeza (ETL) e criar visualizações que facilitem a interpretação de fenômenos complexos, sempre respeitando as diretrizes de privacidade e anonimização de dados.
+        </p>
+    </section>
+
+    <section class="projects-section">
+        <h2>Projetos Selecionados</h2>
+
+        <!-- PROJETO 1 -->
+        <div class="project-card">
+            <h3>Monitoramento de Produtividade Pública</h3>
+            <p>
+                Desenvolvimento de um dashboard interativo de alta performance para visualização de métricas de produtividade e composição de acervo processual. O projeto integra conceitos de Controle Estatístico de Processo (CEP) para identificar anomalias no fluxo de trabalho e utiliza decomposição de séries temporais para análise de tendências estruturais. Os dados foram rigorosamente anonimizados para fins de demonstração técnica.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">Chart.js</span>
+                <span class="tech-tag">Estatística Aplicada</span>
+            </div>
+            <div class="links">
+                <a href="./dashboard-ministerio-publico.html" class="link-btn">Acessar Dashboard Interativo</a>
+            </div>
+        </div>
+
+        <!-- PROJETO 2 -->
+        <div class="project-card">
+            <h3>Pipeline ETL de Dados Médicos</h3>
+            <p>
+                Criação de um pipeline robusto para a consolidação de dados médicos provenientes de mais de 50 arquivos brutos. O processo envolve a orquestração de extração, limpeza profunda via Regex e deduplicação inteligente. O destaque técnico é o uso do DuckDB para processamento analítico ultra-rápido, transformando um acervo fragmentado em um dataset limpo e pronto para modelagem.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">SQL</span>
+                <span class="tech-tag">DuckDB</span>
+                <span class="tech-tag">Pandas</span>
+                <span class="tech-tag">Regex</span>
+            </div>
+            <div class="links">
+                <a href="./01_SQL_Python_ETL.ipynb" class="link-btn">Ver Notebook do Projeto</a>
+            </div>
+        </div>
+
+        <!-- PROJETO 3 -->
+        <div class="project-card">
+            <h3>Previsão de Evasão e Sucesso Acadêmico</h3>
+            <p>
+                Trabalho desenvolvido para a disciplina "Introdução à Ciência de Dados" na UFAM. Consiste em um estudo estatístico e preditivo utilizando algoritmos de classificação (Scikit-learn) para identificar fatores de risco relacionados à evasão escolar. O notebook detalha desde a análise exploratória (EDA) até a avaliação de métricas de performance do modelo, como acurácia e recall.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Scikit-learn</span>
+                <span class="tech-tag">Seaborn</span>
+                <span class="tech-tag">Análise Exploratória</span>
+                <span class="tech-tag">Classificação</span>
+            </div>
+            <div class="links">
+                <a href="./02_Python_Sklearn_Classification.ipynb" class="link-btn">Ver Notebook do Projeto</a>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="links" style="justify-content: center; margin-bottom: 1rem;">
+            <a href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" class="link-btn external">LinkedIn</a>
+            <a href="mailto:hugo-matheus.rocha@ufam.edu.br" class="link-btn external">Email</a>
+        </div>
+        Hugo Matheus Rocha · Portfólio de Dados 2026
+    </footer>
 </div>
-
-<!-- DASHBOARDS -->
-<section id="dash" class="content-section active">
-    <div class="card">
-        <h3>Monitoramento de Produtividade Pública</h3>
-        <p>Dashboard interativo focado em métricas processuais e controle estatístico. Desenvolvido para visualização de fluxos de trabalho em instituições públicas.</p>
-        <a href="dashboard-ministerio-publico.html" class="btn">Acessar Dashboard</a>
-    </div>
-</section>
-
-<!-- NOTEBOOKS -->
-<section id="notebooks" class="content-section">
-    <div class="card">
-        <h3>Pipeline ETL de Dados Médicos</h3>
-        <p>Limpeza e consolidação de dados complexos utilizando Python e DuckDB. Foco em anonimização de dados sensíveis.</p>
-        <a href="https://github.com/rocha-matheus/portfolio/blob/main/01_SQL_Python_ETL.ipynb" class="btn btn-blue">Ver Notebook</a>
-    </div>
-    <div class="card">
-        <h3>Previsão de Evasão Escolar</h3>
-        <p>Projeto desenvolvido para a disciplina "Introdução à Ciência de Dados" (UFAM). Aplicação de modelos de classificação para prever o sucesso acadêmico.</p>
-        <a href="https://github.com/rocha-matheus/portfolio/blob/main/02_Python_Sklearn_Classification.ipynb" class="btn btn-blue">Ver Notebook</a>
-    </div>
-</section>
-
-<!-- SOBRE -->
-<section id="about" class="content-section">
-    <div class="card">
-        <h3>Trajetória Profissional</h3>
-        <p>Estudante de Estatística apaixonado por Engenharia de Dados e Business Intelligence. Atualmente Vice-Presidente do Centro Acadêmico de Estatística na UFAM.</p>
-        <a href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" class="btn">Conectar no LinkedIn</a>
-    </div>
-</section>
-
-<footer>
-    Hugo Matheus Rocha · Portfólio de Dados 2026
-</footer>
-
-<script>
-    function showTab(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-</script>
 
 </body>
 </html>
