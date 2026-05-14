@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Controle · 2024-2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --vm:  #7e141a; --vmmd: #9e1a22; --vmlt: #b8292f;
+    --dou: #c9a84c; --dlt: #e8d49a;
+    --azul: #4a7db5;
+    --bg:  #f4f1ed; --card: #ffffff;
+    --brd: #ddd5cc; --blt: #ece7e1;
+    --txt: #1a1108; --mut: #7a6b5a; --lbl: #4a3b2a; --ink: #9c8b7a;
+    --grn: #2a7a4b; --grnlt: #5fa67e;
+    --ora: #d97a3a;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'Source Sans 3',sans-serif;font-size:14px;min-height:100vh}
+
+  /* HEADER */
+  header{background:var(--vm);position:relative;overflow:hidden}
+  header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 28px,rgba(0,0,0,0.04) 28px,rgba(0,0,0,0.04) 29px);pointer-events:none}
+  .hw{max-width:1280px;margin:0 auto;padding:20px 40px;display:flex;align-items:center;gap:26px;position:relative;z-index:1}
+  .logo{width:84px;height:auto;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.35))}
+  .ht{flex:1}
+  .ey{font-family:'Roboto Mono',monospace;font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px}
+  h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.15}
+  h1 em{font-style:normal;color:var(--dou)}
+  .hs{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;font-weight:300}
+  .hr{text-align:right;flex-shrink:0;border-left:1px solid rgba(255,255,255,0.2);padding-left:26px}
+  .tn{font-family:'Roboto Mono',monospace;font-size:36px;font-weight:500;color:var(--dou);line-height:1;letter-spacing:-1px;transition:all .3s}
+  .tl{font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+
+  /* SELECTOR (CAO) */
+  .sel-bar{background:var(--vm);border-top:1px solid rgba(255,255,255,0.15);padding:0}
+  .sel-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:stretch;gap:0}
+  .sel-btn{
+    font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;
+    padding:11px 28px;cursor:pointer;background:transparent;border:none;
+    color:rgba(255,255,255,0.55);border-bottom:3px solid transparent;
+    transition:all .2s;white-space:nowrap;
+  }
+  .sel-btn:hover{color:rgba(255,255,255,0.85)}
+  .sel-btn.active{color:#fff;border-bottom-color:var(--dou);background:rgba(255,255,255,0.07)}
+
+  /* SUB-TABS */
+  .sub-bar{background:#fff;border-bottom:1px solid var(--brd)}
+  .sub-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:stretch;gap:0}
+  .sub-btn{
+    font-family:'Source Sans 3',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.3px;
+    padding:13px 22px;cursor:pointer;background:transparent;border:none;
+    color:var(--mut);border-bottom:3px solid transparent;
+    transition:all .2s;white-space:nowrap;
+  }
+  .sub-btn:hover{color:var(--txt)}
+  .sub-btn.active{color:var(--vm);border-bottom-color:var(--vm);background:rgba(126,20,26,0.025)}
+  .sub-btn small{font-family:'Roboto Mono',monospace;font-size:9px;font-weight:400;color:var(--ink);margin-left:6px;letter-spacing:1px}
+
+  /* DIVIDER */
+  .divbar{height:4px;background:linear-gradient(90deg,var(--dou) 0%,var(--vmlt) 60%,var(--vm) 100%)}
+
+  /* LAYOUT */
+  main{padding:26px 40px 52px;max-width:1280px;margin:0 auto}
+  .slbl{font-family:'Roboto Mono',monospace;font-size:9.5px;font-weight:500;letter-spacing:2.8px;text-transform:uppercase;color:var(--vm);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+  .slbl::after{content:'';flex:1;height:1px;background:var(--brd)}
+
+  /* KPI GRID */
+  .kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:30px}
+  .kgrid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:30px}
+  .kpi{background:var(--card);border:1px solid var(--brd);border-top:3px solid var(--ac,var(--vm));border-radius:4px;padding:17px 17px 13px;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:box-shadow .2s,transform .2s}
+  .kpi:hover{box-shadow:0 4px 14px rgba(126,20,26,0.1);transform:translateY(-1px)}
+  .klbl{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--mut);margin-bottom:9px}
+  .kval{font-family:'Roboto Mono',monospace;font-size:28px;font-weight:500;color:var(--txt);line-height:1;transition:all .3s}
+  .ksub{font-size:11px;color:var(--ink);margin-top:5px;font-weight:400}
+  .kdlt{font-family:'Roboto Mono',monospace;font-size:11.5px;font-weight:500;margin-top:4px;transition:all .3s}
+  .up{color:var(--grn)} .dn{color:var(--vm)} .ne{color:#7a5f2a}
+
+  /* CHART ROWS */
+  .crow{display:grid;gap:18px;margin-bottom:22px}
+  .rf{grid-template-columns:1fr}
+  .r64{grid-template-columns:6fr 4fr}
+  .rh{grid-template-columns:1fr 1fr}
+
+  .card{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:22px 22px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+  .ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+  .ct{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--txt);letter-spacing:-0.2px}
+  .cs{font-size:11.5px;color:var(--mut);margin-bottom:16px;font-weight:300}
+  .tag{font-family:'Roboto Mono',monospace;font-size:9.5px;padding:3px 9px;border-radius:2px;border:1px solid var(--vm);color:var(--vm);background:rgba(126,20,26,0.04);flex-shrink:0}
+  .tg{border-color:var(--dou);color:#7a5f2a;background:rgba(201,168,76,0.06)}
+
+  /* EXPLAINER BOX (composicao) */
+  .expl{background:#fbf9f6;border-left:3px solid var(--dou);border-radius:3px;padding:14px 18px;margin-bottom:14px;font-size:12.5px;color:var(--lbl);line-height:1.55}
+  .expl strong{color:var(--vm);font-weight:600}
+  .expl-title{font-family:'Roboto Mono',monospace;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--vm);margin-bottom:6px;font-weight:500}
+  .expl p + p{margin-top:8px}
+
+  /* LEGEND PILLS */
+  .legrow{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 16px;font-size:11px;color:var(--mut)}
+  .legmark{display:inline-flex;align-items:center;gap:6px}
+  .legmark::before{content:'';width:11px;height:11px;border-radius:2px;background:var(--c)}
+
+  /* PILLS */
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .pill{font-size:11px;padding:5px 11px;border-radius:3px;border-left:3px solid var(--vm);background:rgba(126,20,26,0.04);color:var(--vm)}
+  .pill.g{background:rgba(42,122,75,0.05);border-color:var(--grn);color:#1d5c38}
+  .pill.a{background:rgba(201,168,76,0.07);border-color:var(--dou);color:#7a5f2a}
+
+  /* TABLE */
+  .dtbl{width:100%;border-collapse:collapse;font-size:12px}
+  .dtbl th{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);padding:7px 10px;text-align:left;border-bottom:2px solid var(--brd);font-weight:400}
+  .dtbl td{padding:7px 10px;border-bottom:1px solid var(--blt);color:var(--txt);font-weight:300}
+  .dtbl tr:hover td{background:rgba(126,20,26,0.025)}
+  .rn{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--ink)}
+  .bm{height:4px;border-radius:2px;background:var(--vm);margin-top:4px;opacity:0.35}
+  .cc{font-family:'Roboto Mono',monospace;font-size:12px;font-weight:500;color:var(--txt)}
+  .pc{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--mut)}
+  .ac{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--vm);font-weight:500}
+
+  /* DOUGHNUT */
+  .dl{display:flex;gap:18px;align-items:center}
+  .dw{flex:0 0 160px}
+  .dleg{flex:1}
+  .li{display:flex;align-items:center;gap:9px;padding:4px 0;border-bottom:1px solid var(--blt)}
+  .li:last-child{border:none}
+  .ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+  .ln{font-size:11px;font-weight:400;flex:1;color:var(--txt)}
+  .lv{font-family:'Roboto Mono',monospace;font-size:10.5px;color:var(--mut)}
+
+  /* HEAT */
+  .htbl{width:100%;border-collapse:collapse;font-size:12px}
+  .htbl th{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);padding:6px 8px;text-align:left;border-bottom:2px solid var(--brd);font-weight:400}
+  .htbl td{padding:5px 8px;border-bottom:1px solid var(--blt)}
+
+  /* FOOTER */
+  footer{background:var(--vm);border-top:4px solid var(--dou)}
+  .fi{max-width:1280px;margin:0 auto;padding:14px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:10px;color:rgba(255,255,255,0.55);font-family:'Roboto Mono',monospace;letter-spacing:.5px}
+  footer span{color:rgba(255,255,255,0.85)}
+  .fi-credit{width:100%;text-align:center;padding-top:8px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);font-size:10.5px;letter-spacing:1px}
+  .fi-credit b{color:var(--dou);font-weight:500}
+
+  /* ANIMATE */
+  .fade{animation:fadein .35s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  /* PANEL TOGGLES */
+  .panel{display:none}
+  .panel.active{display:block}
+
+  /* SORT BUTTONS */
+  .sort-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .sort-btn{font-family:'Roboto Mono',monospace;font-size:9.5px;letter-spacing:1px;padding:5px 12px;border:1px solid var(--brd);border-radius:3px;background:#fff;color:var(--mut);cursor:pointer;transition:all .15s}
+  .sort-btn:hover{border-color:var(--vm);color:var(--vm)}
+  .sort-btn.active{background:var(--vm);color:#fff;border-color:var(--vm)}
+  .sort-lbl{font-size:10.5px;color:var(--mut);font-family:'Roboto Mono',monospace;letter-spacing:1px}
+
+  /* TS CAROUSEL */
+  .ts-nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .ts-arr{width:36px;height:36px;border-radius:50%;border:1px solid var(--brd);background:#fff;cursor:pointer;font-size:16px;color:var(--vm);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+  .ts-arr:hover{background:var(--vm);color:#fff;border-color:var(--vm)}
+  .ts-arr:disabled{opacity:.3;cursor:default}
+  .ts-center{flex:1;text-align:center}
+  .ts-dots{display:flex;gap:7px;justify-content:center;margin-top:8px}
+  .ts-dot{width:8px;height:8px;border-radius:50%;background:var(--brd);cursor:pointer;transition:background .2s}
+  .ts-dot.active{background:var(--vm)}
+  .ts-canvas-wrap{position:relative;height:290px}
+  .ts-canvas-wrap canvas{position:absolute;inset:0}
+
+  @media(max-width:900px){
+    .kgrid,.kgrid-4{grid-template-columns:repeat(2,1fr)}
+    .r64,.rh{grid-template-columns:1fr}
+    main,.hw,.sel-inner,.sub-inner,.fi{padding-left:16px;padding-right:16px}
+    .sel-btn{padding:10px 14px;font-size:9px}
+    .sub-btn{padding:11px 14px;font-size:11px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hw">
+    <img class="logo" src="https://i.ibb.co/sdw311cv/Gemini-Generated-Image-3ffkun3ffkun3ffk.png" alt="Logo Fictício">
+    <div class="ht">
+      <div class="ey">Instituição Pública de Justiça (Ambiente de Demonstração)</div>
+      <h1><em>Órgão de Controle A</em> e <em>Órgão de Controle B</em></h1>
+      <div class="hs">Produtividade processual e composição do acervo · DADOS ANONIMIZADOS PARA PORTFÓLIO</div>
+    </div>
+    <div class="hr">
+      <div class="tn" id="hTotal">00.000</div>
+      <div class="tl">Total de Registros (Mockup)</div>
+    </div>
+  </div>
+  <div style="background: #ffcc00; color: #000; text-align: center; font-family: 'Roboto Mono', monospace; font-size: 12px; padding: 6px; font-weight: bold; letter-spacing: 1px; border-bottom: 2px solid #000;">
+    ⚠️ AVISO: ESTE DASHBOARD UTILIZA DADOS 100% FICTÍCIOS E NOMES GENÉRICOS PARA FINS DE DEMONSTRAÇÃO DE PORTFÓLIO TÉCNICO.
+  </div>
+</header>
+
+<!-- BARRA CAO -->
+<div class="sel-bar">
+  <div class="sel-inner">
+    <button class="sel-btn active" onclick="setCao('caoj',this)">Unidade Regional A</button>
+    <button class="sel-btn" onclick="setCao('gaeco',this)">Unidade Especializada B</button>
+  </div>
+</div>
+
+<!-- SUB-ABAS -->
+<div class="sub-bar">
+  <div class="sub-inner" style="overflow-x:auto;">
+    <button class="sub-btn active" onclick="setSub('prod',this)">Produtividade <small>MÉTRICA_X</small></button>
+    <button class="sub-btn" onclick="setSub('comp',this)">Composição do Acervo <small>INVENTÁRIO</small></button>
+    <button class="sub-btn" onclick="setSub('stat',this)">Inferência Estatística <small>MONITORAMENTO</small></button>
+    <button class="sub-btn" onclick="setSub('metod',this)">Notas Metodológicas <small>INFO</small></button>
+  </div>
+</div>
+<div class="divbar"></div>
+
+<!-- ============================================== -->
+<!-- PAINEL 1: PRODUTIVIDADE                        -->
+<!-- ============================================== -->
+<main id="panelProd" class="panel active">
+  <!-- Explainer geral -->
+  <div class="expl" style="margin-bottom:20px">
+    <div class="expl-title">O que esta aba mostra</div>
+    <p>Cada registro aqui representa um <strong>movimento processual</strong>, um ato realizado pelo promotor ou pela serventia, como juntada, promoção, ofício ou baixa de carga. Um único processo pode gerar vários movimentos por mês, por isso os totais desta aba são maiores que o número de processos na aba <strong>Composição do Acervo</strong>.</p>
+    <p>A comparação <strong>2024 vs 2025</strong> usa o mesmo recorte de 12 meses em cada ano, garantindo leitura direta da evolução sem distorção de período parcial.</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="slbl">Indicadores Gerais</div>
+  <div class="kgrid">
+    <div class="kpi" style="--ac:var(--vm)">
+      <div class="klbl">Total 2024</div>
+      <div class="kval" id="k24">00.000</div>
+      <div class="ksub" id="k24s">12 meses</div>
+    </div>
+    <div class="kpi" style="--ac:var(--dou)">
+      <div class="klbl">Total 2025</div>
+      <div class="kval" id="k25">00.000</div>
+      <div class="ksub" id="k25s">12 meses</div>
+    </div>
+    <div class="kpi" style="--ac:var(--grn)">
+      <div class="klbl">Variação no mesmo período</div>
+      <div class="kval" id="kvar" style="font-size:22px">+0,00%</div>
+      <div class="kdlt up" id="kvars">+0 movimentos</div>
+    </div>
+    <div class="kpi" style="--ac:var(--vmmd)">
+      <div class="klbl">Média mensal 2024</div>
+      <div class="kval" id="km24">0.000</div>
+      <div class="ksub">mov/mês</div>
+    </div>
+    <div class="kpi" style="--ac:var(--dou)">
+      <div class="klbl">Média mensal 2025</div>
+      <div class="kval" id="km25">0.000</div>
+      <div class="kdlt up" id="km25d">+0,0% vs 2024</div>
+    </div>
+  </div>
+
+  <!-- LINHA -->
+  <div class="slbl">Comparação de mesmo período · 2024 vs 2025</div>
+  <div class="crow rf" style="margin-bottom:24px">
+    <div class="card">
+      <div class="ch"><div class="ct">Produtividade Mensal Comparada</div></div>
+      <div class="cs">Número de movimentos registrados por mês</div>
+      <div style="position:relative;height:285px"><canvas id="lineChart"></canvas></div>
+      <div class="pills" id="linePills"></div>
+    </div>
+  </div>
+
+  <!-- PARETO + RANKING -->
+  <div class="slbl">Hierarquia de Movimento</div>
+  <div class="expl" style="margin-bottom:14px">
+    <p>O <strong>gráfico de Pareto</strong> ordena os tipos de movimento do mais ao menos frequente. A linha acumulada (%) mostra que em geral <strong>2–3 tipos de movimento concentram mais de 50% de toda a produção</strong> , um sinal de onde está o esforço operacional real. O ranking à direita detalha a participação individual e cumulativa de cada tipo.</p>
+  </div>
+  <div class="crow r64">
+    <div class="card">
+      <div class="ch"><div class="ct">Hierarquia de Movimento</div><div class="tag tg">Pareto</div></div>
+      <div class="cs">Barras: volume absoluto · Linha: % acumulado</div>
+      <div style="position:relative;height:310px"><canvas id="paretoChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:4px">Ranking Detalhado</div>
+      <div class="cs">Representatividade individual e acumulada</div>
+      <table class="dtbl"><thead><tr>
+        <th>#</th><th>Movimento</th><th>Count</th><th>%</th><th>Acum.</th>
+      </tr></thead><tbody id="rankBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ORGAOS + ATUACAO -->
+  <div class="slbl">Distribuição Institucional</div>
+  <div class="expl" style="margin-bottom:14px">
+    <p>O painel da esquerda mostra <strong>quais unidades administrativas mais registraram movimentos</strong>. No Órgão A as unidades territoriais lideram o volume. No Órgão B o registro é centralizado. O gráfico da direita classifica os processos por <strong>área de atuação</strong>, revelando o perfil temático da carteira.</p>
+  </div>
+  <div class="crow rh">
+    <div class="card">
+      <div class="ct">Top Órgãos por Produtividade</div>
+      <div class="cs">Movimentos registrados por unidade</div>
+      <div style="position:relative;height:245px"><canvas id="orgChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Distribuição por Área de Atuação</div>
+      <div class="cs">Classificação dos processos por matéria</div>
+      <div class="dl">
+        <div class="dw" style="height:175px;position:relative"><canvas id="donutChart"></canvas></div>
+        <div class="dleg" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELTA + HEAT -->
+  <div class="slbl">Dados Descritivos Adicionais</div>
+  <div class="expl" style="margin-bottom:14px">
+    <p>O gráfico de <strong>variação %</strong> (esquerda) destaca meses em que a produtividade de 2025 ficou acima (verde) ou abaixo (vermelho) do mesmo mês em 2024. A <strong>tabela heatmap</strong> (direita) consolida os valores absolutos dos dois anos com intensidade de cor proporcional ao volume, facilitando a comparação visual sem precisar ler cada número.</p>
+  </div>
+  <div class="crow rh">
+    <div class="card">
+      <div class="ct">Variação % Mensal · 2025 vs 2024</div>
+      <div class="cs">Diferença relativa em relação ao mesmo mês do ano anterior</div>
+      <div style="position:relative;height:230px"><canvas id="deltaChart"></canvas></div>
+      <div class="pills" id="deltaPills"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Tabela Mensal de Produtividade</div>
+      <div class="cs">Intensidade de cor proporcional ao volume do mês</div>
+      <div id="heatWrap" style="margin-top:6px"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================== -->
+<!-- PAINEL 2: COMPOSIÇÃO DO ACERVO                 -->
+<!-- ============================================== -->
+<main id="panelComp" class="panel">
+
+  <div class="expl">
+    <div class="expl-title">O que esta aba mostra</div>
+    <p>A aba <strong>Produtividade</strong> conta <strong>movimentos</strong> (atos processuais como juntadas, baixas, manifestações). Esta aba conta <strong>processos únicos</strong> que estavam no inventário entre 2024 e 2025. Por isso os números são menores.</p>
+    <p>Aqui o foco não é "quantos atos foram registrados", e sim <strong>o que está no acervo</strong>, <strong>quanto já foi finalizado</strong> e <strong>quanto tempo leva</strong>. Cada barra dos gráficos mostra três informações de uma vez: volume (tamanho da barra), taxa de finalização (rótulo em %) e tempo mediano em dias até o desfecho.</p>
+  </div>
+
+  <!-- KPIs Composição -->
+  <div class="slbl">Panorama Geral do Acervo</div>
+  <div class="kgrid-4">
+    <div class="kpi" style="--ac:var(--vm)">
+      <div class="klbl">Processos no Inventário</div>
+      <div class="kval" id="cTotal">00.000</div>
+      <div class="ksub">2024 a 2025</div>
+    </div>
+    <div class="kpi" style="--ac:var(--grn)">
+      <div class="klbl">Finalizados</div>
+      <div class="kval" id="cFin">00.000</div>
+      <div class="kdlt up" id="cFinPct">0,0% do total</div>
+    </div>
+    <div class="kpi" style="--ac:var(--ora)">
+      <div class="klbl">Pendentes</div>
+      <div class="kval" id="cPend">00.000</div>
+      <div class="kdlt ne" id="cPendPct">0,0% do total</div>
+    </div>
+    <div class="kpi" style="--ac:var(--azul)">
+      <div class="klbl">Tempo Mediano</div>
+      <div class="kval" id="cMed">0d</div>
+      <div class="ksub" id="cMedSub">P75: 00 dias</div>
+    </div>
+  </div>
+
+  <!-- Composição Judicial vs Extrajudicial -->
+  <div class="slbl">Natureza dos Processos</div>
+  <div class="crow rh">
+    <div class="card">
+      <div class="ct">Judicial vs Extrajudicial</div>
+      <div class="cs">Como o acervo se divide entre processos que tramitam na Justiça e procedimentos internos</div>
+      <div class="dl" style="margin-top:6px">
+        <div class="dw" style="height:175px;position:relative"><canvas id="jeChart"></canvas></div>
+        <div class="dleg" id="jeLegend"></div>
+      </div>
+      <div class="expl" style="margin-top:14px;margin-bottom:0">
+        <p id="jeExpl">Dados demonstrativos sobre a divisão da carteira entre instâncias judiciais e administrativas.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Distribuição Temporal</div>
+      <div class="cs">Quantos dias os processos permanecem no inventário antes de serem finalizados</div>
+      <table class="dtbl" style="margin-top:10px">
+        <thead><tr><th>Estatística</th><th style="text-align:right">Dias</th><th>Leitura</th></tr></thead>
+        <tbody id="tempoStats"></tbody>
+      </table>
+      <div class="expl" style="margin-top:14px;margin-bottom:0">
+        <p id="tempoExpl">Análise da velocidade de resolução do estoque processual.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP ASSUNTOS -->
+  <div class="slbl">Top Assuntos Trabalhados</div>
+  <div class="crow rf">
+    <div class="card">
+      <div class="ch">
+        <div class="ct">Os 15 Assuntos Mais Frequentes no Acervo</div>
+        <div class="tag">Top 15</div>
+      </div>
+      <div class="cs">Mostra <b>quais temas dominam o trabalho</b> da unidade. As barras verdes indicam assuntos resolvidos acima da média de finalização. As barras vermelhas indicam assuntos que ficam mais tempo abertos.</div>
+      <div class="sort-row">
+        <span class="sort-lbl">Ordenar:</span>
+        <button class="sort-btn active" onclick="sortComp('assuntos','vol',this)">Por Volume</button>
+        <button class="sort-btn" onclick="sortComp('assuntos','rate_asc',this)">Menor Finalização</button>
+        <button class="sort-btn" onclick="sortComp('assuntos','rate_desc',this)">Maior Finalização</button>
+        <button class="sort-btn" onclick="sortComp('assuntos','days',this)">Mais Tempo</button>
+      </div>
+      <div class="legrow">
+        <span class="legmark" style="--c:var(--grnlt)">Taxa de finalização acima da média</span>
+        <span class="legmark" style="--c:var(--vmlt)">Taxa de finalização abaixo da média</span>
+        <span style="color:var(--ink);font-family:'Roboto Mono',monospace;font-size:10px">Cada rótulo: n total · taxa de finalização · dias medianos</span>
+      </div>
+      <div style="position:relative;height:520px"><canvas id="assuntosChart"></canvas></div>
+      <div class="expl" style="margin-top:18px;margin-bottom:0">
+        <div class="expl-title">Como ler este gráfico</div>
+        <p id="assuntosExpl"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLASSES PROCESSUAIS -->
+  <div class="slbl">Distribuição por Classe Processual</div>
+  <div class="crow rf">
+    <div class="card">
+      <div class="ch">
+        <div class="ct">Como os Processos se Distribuem por Classe Processual</div>
+        <div class="tag tg">Por Tipo Jurídico</div>
+      </div>
+      <div class="cs"><b>"Classe processual" é o tipo jurídico do processo</b>: ritos ordinários, especiais ou investigativos. Ela define as regras que o processo segue.</div>
+      <div class="sort-row">
+        <span class="sort-lbl">Ordenar:</span>
+        <button class="sort-btn active" onclick="sortComp('classes','vol',this)">Por Volume</button>
+        <button class="sort-btn" onclick="sortComp('classes','rate_asc',this)">Menor Finalização</button>
+        <button class="sort-btn" onclick="sortComp('classes','rate_desc',this)">Maior Finalização</button>
+        <button class="sort-btn" onclick="sortComp('classes','days',this)">Mais Tempo</button>
+      </div>
+      <div class="legrow">
+        <span class="legmark" style="--c:var(--grnlt)">Taxa de finalização acima da média</span>
+        <span class="legmark" style="--c:var(--vmlt)">Taxa de finalização abaixo da média</span>
+        <span style="color:var(--ink);font-family:'Roboto Mono',monospace;font-size:10px">Cada rótulo: n total · taxa de finalização · dias medianos</span>
+      </div>
+      <div style="position:relative;height:420px"><canvas id="classesChart"></canvas></div>
+      <div class="expl" style="margin-top:18px;margin-bottom:0">
+        <div class="expl-title">Como ler este gráfico</div>
+        <p id="classesExpl"></p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ============================================== -->
+<!-- PAINEL 3: INFERÊNCIA ESTATÍSTICA               -->
+<!-- ============================================== -->
+<main id="panelStat" class="panel">
+  <div class="expl">
+    <div class="expl-title">Monitoramento Estatístico (Mockup)</div>
+    <p>Análise do fluxo usando séries temporais e controle estatístico de processos (CEP). Estes gráficos permitem identificar tendências reais e eventos fora do padrão em um ambiente controlado de demonstração.</p>
+  </div>
+
+  <!-- ── CARROSSEL DE SÉRIES TEMPORAIS ── -->
+  <div class="slbl">1. Séries Temporais</div>
+  <div class="card" style="margin-bottom:22px">
+    <div class="ts-nav-bar">
+      <button class="ts-arr" id="tsPrev" onclick="tsNav(-1)">&#8592;</button>
+      <div class="ts-center">
+        <div class="ct" id="tsTitle">Série Temporal com Ajuste STL</div>
+        <div class="cs" id="tsSub">Volume mensal com tendência suavizada pela decomposição STL (Loess)</div>
+        <div class="ts-dots">
+          <span class="ts-dot active" onclick="tsGoTo(0)" title="Série + STL"></span>
+          <span class="ts-dot" onclick="tsGoTo(1)" title="Taxa de Finalização"></span>
+          <span class="ts-dot" onclick="tsGoTo(2)" title="Tempo de Permanência"></span>
+        </div>
+      </div>
+      <button class="ts-arr" id="tsNext" onclick="tsNav(1)">&#8594;</button>
+    </div>
+    <div class="ts-canvas-wrap">
+      <canvas id="tsChart0"></canvas>
+      <canvas id="tsChart1" style="display:none"></canvas>
+      <canvas id="tsChart2" style="display:none"></canvas>
+    </div>
+    <div class="expl" style="margin-top:16px;margin-bottom:0" id="tsExpl">
+      <div class="expl-title" id="tsExplTitle">Como ler: Série + STL</div>
+      <p id="tsExplBody">Análise de tendência removendo o ruído mensal para identificar a direção estrutural da produtividade.</p>
+    </div>
+  </div>
+
+  <!-- ── AUTOCORRELAÇÃO ── -->
+  <div class="slbl">2. Autocorrelação (ACF)</div>
+  <div class="card" style="margin-bottom:22px">
+    <div class="ch">
+      <div>
+        <div class="ct">Função de Autocorrelação, ACF</div>
+        <div class="cs">Correlação do volume de cada mês com os meses anteriores (lags 1–12)</div>
+      </div>
+      <div class="tag" id="acfTag">Estatística</div>
+    </div>
+    <div style="position:relative;height:200px;margin-top:8px"><canvas id="acfChart"></canvas></div>
+    <div class="expl" style="margin-top:14px;margin-bottom:0">
+      <div class="expl-title">Como ler</div>
+      <p id="acfExpl">Detecção de sazonalidade e dependência temporal no fluxo de trabalho.</p>
+    </div>
+  </div>
+
+  <!-- ── CEP: I-MR + CUSUM ── -->
+  <div class="slbl">3. Controle Estatístico do Processo (CEP)</div>
+  <div class="crow rh">
+    <div class="card">
+      <div class="ct">Carta I-MR - Controle Individual</div>
+      <div class="cs">Limites de controle ±3σ sobre o volume mensal</div>
+      <div style="display:flex;gap:6px;margin-top:10px;margin-bottom:6px">
+        <button id="btnImrI"  class="sort-btn active" onclick="switchImr('i')" style="font-size:11px;padding:3px 10px">Carta I (Individuais)</button>
+        <button id="btnImrMR" class="sort-btn"        onclick="switchImr('mr')" style="font-size:11px;padding:3px 10px">Carta MR (Amplitude Móvel)</button>
+      </div>
+      <div style="position:relative;height:260px">
+        <canvas id="imrChart"  style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas>
+        <canvas id="mrChart"   style="position:absolute;top:0;left:0;width:100%;height:100%;display:none"></canvas>
+      </div>
+      <div class="expl" style="margin-top:14px;margin-bottom:0">
+        <p id="imrExplText">Identificação de pontos fora de controle (anomalias) com base em variabilidade estatística.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Carta CUSUM - Desvios Acumulados</div>
+      <div class="cs">Detecção de mudanças sustentadas na média do processo</div>
+      <div style="position:relative;height:260px;margin-top:10px"><canvas id="cusumChart"></canvas></div>
+      <div class="expl" style="margin-top:14px;margin-bottom:0">
+        <p>Detecção de mudanças de patamar na produtividade que não seriam captadas por alertas pontuais.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================== -->
+<!-- PAINEL 4: NOTAS METODOLÓGICAS                  -->
+<!-- ============================================== -->
+<main id="panelMetod" class="panel">
+  <div class="slbl">Notas Metodológicas (Ambiente Demonstrativo)</div>
+  
+  <div class="card" style="margin-bottom:22px">
+    <div class="ct">Sobre este Projeto</div>
+    <div class="cs">Informações sobre a construção e o propósito do dashboard.</div>
+    <div style="font-size:12.5px;color:var(--lbl);line-height:1.6;margin-top:12px;">
+      <p style="margin-bottom:8px"><b>Objetivo:</b> Este dashboard foi criado para demonstrar habilidades em visualização de dados, engenharia de front-end com Chart.js e análise estatística aplicada a fluxos processuais públicos.</p>
+      <p style="margin-bottom:8px"><b>Dados:</b> Os números apresentados aqui são <b>gerados de forma sintética (mockups)</b> ou anonimizados. Nomes de unidades, assuntos e classes foram alterados para garantir total privacidade e conformidade com boas práticas de segurança de dados.</p>
+      <p><b>Tecnologias:</b> HTML5, CSS3 (Vanilla), JavaScript, Chart.js. A lógica de negócio no back-end (não visível aqui) envolveu processamento de grandes volumes de dados via Python e SQL antes da exportação para este formato estático de alta performance.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="fi">
+    <span>Instituição de Exemplo · Dados Anonimizados</span>
+    <span id="footerData">MÉTRICA_X · 00.000 registros · INVENTÁRIO · 00.000 processos</span>
+    <span>Portfólio 2026</span>
+    <div class="fi-credit">Desenvolvido por <b>Hugo Matheus Rocha</b> · Estudo de Caso</div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATASET - PRODUTIVIDADE (MOCKUP)
+// ═══════════════════════════════════════════════════════
+const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+const shortLbl = l => l;
+
+const DB = {
+  caoj: {
+    label: 'Unidade A',
+    total: 45200, t24: 21500, t25: 23700,
+    p24: [1500,1800,1700,1900,1850,1600,1400,1500,1650,1700,2200,2700],
+    p25: [1800,2100,2000,2300,1900,1750,1950,2100,1850,1900,2350,1700],
+    top10lbl: ["Ato Administrativo 01","Ato Processual 02","Diligência de Campo","Manifestação Técnica","Parecer Jurídico","Análise de Documentos","Despacho Ordinário","Encaminhamento Interno","Atendimento","Outros"],
+    top10cnt: [12000,9500,6000,4500,3800,3100,2500,1800,1200,800],
+    orglbl: ["Unidade Territorial 01","Unidade Territorial 02","Unidade Territorial 03","Unidade Territorial 04","Unidade Central"],
+    orgcnt: [15000,12000,8000,6000,4200],
+    atulbl: ["Matéria Cível","Matéria Administrativa","Direitos Sociais","Educação","Saúde","Segurança","Meio Ambiente","Patrimônio","Infraestrutura","Outras"],
+    atucnt: [18000,10000,5000,4000,3000,2000,1500,1000,400,300]
+  },
+  gaeco: {
+    label: 'Unidade B / Especializada',
+    total: 8900, t24: 4200, t25: 4700,
+    p24: [300,350,400,380,420,310,390,340,320,360,310,320],
+    p25: [410,430,450,480,390,410,380,390,360,340,320,340],
+    top10lbl: ["Investigação de Campo","Análise de Sigilo","Inquirição","Relatório Técnico","Medida Cautelar","Diligência Externa","Apoio Operacional","Conclusão de Fase","Interlocução","Diversos"],
+    top10cnt: [2500,1800,1400,1100,800,500,350,250,150,50],
+    orglbl: ["Núcleo Especializado"],
+    orgcnt: [8900],
+    atulbl: ["Alta Complexidade","Crime Organizado","Delitos Financeiros","Corrupção","Lavagem de Bens","Cybercrime","Especializada B","Especializada C","Outras"],
+    atucnt: [4000,2000,1000,800,500,300,150,100,50]
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// DATASET - COMPOSIÇÃO DO ACERVO (MOCKUP)
+// ════════════════════════════════════════─────────────────────────────────────────────────────────────────
+const INV = {
+  caoj: {
+    total: 25400,
+    finalizados: 11200, finalizadosPct: 44.1,
+    pendentes: 14200, pendentesPct: 55.9,
+    judiciais: 12800, judiciaisPct: 50.4,
+    extrajudiciais: 12600, extrajudiciaisPct: 49.6,
+    mediana: 25, media: 68, p75: 110, p90: 215,
+    medFinal: 0, medPend: 85,
+    assuntos: [
+      ['Assunto Demonstrativo A', 5000, 20, 95],
+      ['Assunto Demonstrativo B', 4200, 75, 5],
+      ['Assunto Demonstrativo C', 3800, 15, 110],
+      ['Assunto Demonstrativo D', 2500, 90, 2],
+      ['Assunto Demonstrativo E', 2100, 45, 45],
+      ['Assunto Demonstrativo F', 1800, 10, 150],
+      ['Assunto Demonstrativo G', 1500, 60, 30],
+      ['Assunto Demonstrativo H', 1200, 35, 75],
+      ['Assunto Demonstrativo I', 1000, 80, 10],
+      ['Assunto Demonstrativo J', 900, 25, 120]
+    ],
+    mediaTaxaAssuntos: 45,
+    classes: [
+      ['Procedimento Ordinário', 15000, 15, 120],
+      ['Rito Especial A', 6000, 85, 4],
+      ['Rito Especial B', 3000, 95, 2],
+      ['Medida Urgente', 1000, 70, 10],
+      ['Outros Ritos', 400, 50, 60]
+    ],
+    mediaTaxaClasses: 60,
+    explAssuntos: 'Análise de temas com maior carga de trabalho e suas respectivas taxas de resolução histórica.',
+    explClasses: 'Distribuição do acervo conforme as normas de tramitação vigentes no ambiente de simulação.',
+    tempoStats: [
+      ['Mediana (P50)', 25, 'Metade dos casos resolvidos neste prazo médio'],
+      ['P75', 110, '75% dos casos resolvidos neste prazo'],
+      ['P90', 215, '90% resolvidos neste prazo'],
+      ['Média', 68, 'Sensível a casos de longa duração']
+    ]
+  },
+  gaeco: {
+    total: 5100,
+    finalizados: 950, finalizadosPct: 18.6,
+    pendentes: 4150, pendentesPct: 81.4,
+    judiciais: 400, judiciaisPct: 7.8,
+    extrajudiciais: 4700, extrajudiciaisPct: 92.2,
+    mediana: 580, media: 750, p75: 1200, p90: 1600,
+    medFinal: null, medPend: null,
+    assuntos: [
+      ['Investigação Complexa A', 1500, 12, 800],
+      ['Investigação Complexa B', 1200, 8, 1200],
+      ['Apuração Tipo C', 800, 30, 250],
+      ['Apuração Tipo D', 600, 5, 400],
+      ['Monitoramento E', 500, 40, 100],
+      ['Outros Temas F', 500, 20, 300]
+    ],
+    mediaTaxaAssuntos: 20,
+    classes: [
+      ['Fase Investigativa', 3500, 18, 700],
+      ['Fase Preparatória', 1200, 10, 650],
+      ['Medidas de Apoio', 300, 75, 15],
+      ['Incidentes', 100, 60, 20]
+    ],
+    mediaTaxaClasses: 40,
+    explAssuntos: 'O perfil de investigação especializada demanda prazos estendidos para maturação das provas.',
+    explClasses: 'Predomínio de ritos de apuração preliminar e atos de suporte investigativo.',
+    tempoStats: [
+      ['Mediana (P50)', 580, 'Prazos compatíveis com ritos de alta complexidade'],
+      ['P75', 1200, 'Casos de longa maturação'],
+      ['P90', 1600, 'Teto estatístico de permanência'],
+      ['Média', 750, 'Média representativa do acervo especializado']
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// CHART DEFAULTS
+// ═══════════════════════════════════════════════════════
+Chart.defaults.color = '#7a6b5a';
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+Chart.defaults.font.size = 11;
+const grid = { color:'#ece7e1', drawBorder:false };
+const ticks = { color:'#9c8b7a', font:{size:10} };
+
+let lineC, paretoC, orgC, donutC, deltaC;
+let jeC, assuntosC, classesC;
+let currentCao = 'caoj';
+let currentSub = 'prod';
+
+const donutPalette = ['#7e141a','#9e1a22','#b8292f','#c9a84c','#a08030','#4a7db5','#2a7a4b','#7a3f8a','#c06030','#9c8b7a'];
+
+// ═══════════════════════════════════════════════════════
+// INIT CHARTS - Produtividade
+// ═══════════════════════════════════════════════════════
+function initProdCharts() {
+  const d = DB.caoj;
+
+  lineC = new Chart(document.getElementById('lineChart'), {
+    type:'line',
+    data:{ labels:meses, datasets:[
+      { label:'2024', data:d.p24, borderColor:'#4a7db5', backgroundColor:'rgba(74,125,181,0.07)', borderWidth:2, pointRadius:4, pointHoverRadius:7, pointBackgroundColor:'#4a7db5', tension:0.35, fill:true },
+      { label:'2025', data:d.p25, borderColor:'#7e141a', backgroundColor:'rgba(126,20,26,0.06)', borderWidth:2.5, pointRadius:4, pointHoverRadius:7, pointBackgroundColor:'#7e141a', tension:0.35, fill:true }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+      plugins:{ legend:{position:'top',align:'end',labels:{color:'#4a3b2a',usePointStyle:true,pointStyleWidth:8,font:{size:11}}},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{ label: c=>`  ${c.dataset.label}: ${c.parsed.y.toLocaleString('pt-BR')}`,
+            afterLabel: c=>{ if(c.datasetIndex===1){ const cur=DB[currentCao]; const dv=((cur.p25[c.dataIndex]-cur.p24[c.dataIndex])/cur.p24[c.dataIndex]*100).toFixed(1); return `  Δ vs 2024: ${dv>0?'+':''}${dv}%`; } return ''; }
+          }
+        }
+      },
+      scales:{ x:{grid,ticks}, y:{grid,ticks:{...ticks,callback:v=>v.toLocaleString('pt-BR')}} }
+    }
+  });
+
+  paretoC = new Chart(document.getElementById('paretoChart'), {
+    type:'bar',
+    data:{ labels:[], datasets:[
+      { type:'bar', label:'Movimentos', data:[], backgroundColor:[], borderRadius:2, yAxisID:'y' },
+      { type:'line', label:'% Acumulado', data:[], borderColor:'#1a1108', backgroundColor:'transparent', borderWidth:1.5, pointRadius:3, pointBackgroundColor:'#1a1108', tension:0, yAxisID:'y2' }
+    ]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top',align:'end',labels:{color:'#4a3b2a',usePointStyle:true,pointStyleWidth:7,font:{size:10}}},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a'}
+      },
+      scales:{ x:{grid,ticks:{...ticks,callback:v=>v.toLocaleString('pt-BR')}}, y:{grid:{display:false},ticks:{...ticks,font:{size:9.5}}},
+        y2:{position:'right',grid:{display:false},min:0,max:100,ticks:{...ticks,callback:v=>v+'%'}}
+      }
+    }
+  });
+
+  orgC = new Chart(document.getElementById('orgChart'), {
+    type:'bar',
+    data:{ labels:[], datasets:[{ label:'Movimentos', data:[], backgroundColor:[], borderRadius:2 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{ label:c=>`  ${c.parsed.x.toLocaleString('pt-BR')} mov.` }
+        }
+      },
+      scales:{ x:{grid,ticks:{...ticks,callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}, y:{grid:{display:false},ticks:{...ticks,font:{size:10.5}}} }
+    }
+  });
+
+  donutC = new Chart(document.getElementById('donutChart'), {
+    type:'doughnut',
+    data:{ labels:[], datasets:[{ data:[], backgroundColor:[], borderWidth:0, hoverOffset:5 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{ label:c=>{ const tot=c.dataset.data.reduce((a,b)=>a+b,0); return `  ${c.parsed.toLocaleString('pt-BR')} (${(c.parsed/tot*100).toFixed(1)}%)`; } }
+        }
+      }
+    }
+  });
+
+  deltaC = new Chart(document.getElementById('deltaChart'), {
+    type:'bar',
+    data:{ labels:meses, datasets:[{ label:'Δ% 2025 vs 2024', data:[], backgroundColor:[], borderRadius:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{ label:c=>`  ${c.parsed.y>0?'+':''}${c.parsed.y}%` }
+        }
+      },
+      scales:{ x:{grid:{display:false},ticks}, y:{grid,ticks:{...ticks,callback:v=>v+'%'}} }
+    }
+  });
+}
+
+const barLabelPlugin = {
+  id:'barLabel',
+  afterDatasetsDraw(chart) {
+    const {ctx} = chart;
+    const meta = chart.getDatasetMeta(0);
+    const inv = INV[currentCao];
+    const src = chart._sortedSrc || (chart.canvas.id === 'assuntosChart' ? inv.assuntos : inv.classes);
+    ctx.save();
+    ctx.font = '600 10px "Roboto Mono", monospace';
+    ctx.fillStyle = '#1a1108';
+    ctx.textBaseline = 'middle';
+    meta.data.forEach((bar, i) => {
+      const r = src[src.length - 1 - i];
+      if(r) {
+        const txt = `${r[1].toLocaleString('pt-BR')} · ${r[2]}% · ${r[3]}d`;
+        ctx.fillText(txt, bar.x + 6, bar.y);
+      }
+    });
+    ctx.restore();
+  }
+};
+
+function initCompCharts() {
+  jeC = new Chart(document.getElementById('jeChart'), {
+    type:'doughnut',
+    data:{ labels:['Judicial','Extrajudicial'], datasets:[{ data:[0,0], backgroundColor:['#4a7db5','#7e141a'], borderWidth:0, hoverOffset:5 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{ label:c=>{ const tot=c.dataset.data.reduce((a,b)=>a+b,0); return `  ${c.label}: ${c.parsed.toLocaleString('pt-BR')} (${(c.parsed/tot*100).toFixed(1)}%)`; } }
+        }
+      }
+    }
+  });
+
+  assuntosC = new Chart(document.getElementById('assuntosChart'), {
+    type:'bar',
+    data:{ labels:[], datasets:[{ label:'Processos', data:[], backgroundColor:[], borderRadius:2 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{
+            label:c=>{ const inv=INV[currentCao]; const r=inv.assuntos[inv.assuntos.length-1-c.dataIndex]; return [`  Volume: ${r[1].toLocaleString('pt-BR')} processos`,`  Taxa finalização: ${r[2]}%`,`  Dias medianos: ${r[3]}`]; }
+          }
+        }
+      },
+      scales:{ x:{grid,ticks:{...ticks,callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v}}, y:{grid:{display:false},ticks:{...ticks,font:{size:10.5}}} }
+    },
+    plugins:[barLabelPlugin]
+  });
+
+  classesC = new Chart(document.getElementById('classesChart'), {
+    type:'bar',
+    data:{ labels:[], datasets:[{ label:'Processos', data:[], backgroundColor:[], borderRadius:2 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{backgroundColor:'#fff',borderColor:'#ddd5cc',borderWidth:1,titleColor:'#1a1108',bodyColor:'#7a6b5a',
+          callbacks:{
+            label:c=>{ const inv=INV[currentCao]; const r=inv.classes[inv.classes.length-1-c.dataIndex]; return [`  Volume: ${r[1].toLocaleString('pt-BR')} processos`,`  Taxa finalização: ${r[2]}%`,`  Dias medianos: ${r[3]}`]; }
+          }
+        }
+      },
+      scales:{ x:{grid,ticks:{...ticks,callback:v=>v>=1000?(v/1000).toFixed(1)+'k':v}}, y:{grid:{display:false},ticks:{...ticks,font:{size:10.5}}} }
+    },
+    plugins:[barLabelPlugin]
+  });
+}
+
+function updateProd(key) {
+  const d = DB[key];
+  document.getElementById('hTotal').textContent = d.total.toLocaleString('pt-BR');
+
+  const avg24 = Math.round(d.p24.reduce((a,b)=>a+b,0)/12);
+  const avg25 = Math.round(d.p25.reduce((a,b)=>a+b,0)/12);
+  const vPct  = ((d.t25-d.t24)/d.t24*100).toFixed(2);
+  const vAbs  = d.t25-d.t24;
+  const avgPct= ((avg25-avg24)/avg24*100).toFixed(1);
+
+  document.getElementById('k24').textContent  = d.t24.toLocaleString('pt-BR');
+  document.getElementById('k25').textContent  = d.t25.toLocaleString('pt-BR');
+  document.getElementById('k24s').textContent = `12 meses · ${d.label}`;
+  document.getElementById('k25s').textContent = `12 meses · ${d.label}`;
+  document.getElementById('kvar').textContent = `${vPct>0?'+':''}${vPct}%`;
+  const kvEl = document.getElementById('kvars');
+  kvEl.textContent = `${vAbs>0?'+':''}${vAbs.toLocaleString('pt-BR')} registros`;
+  kvEl.className = 'kdlt ' + (vAbs>=0?'up':'dn');
+  document.getElementById('km24').textContent = avg24.toLocaleString('pt-BR');
+  document.getElementById('km25').textContent = avg25.toLocaleString('pt-BR');
+  const km25d = document.getElementById('km25d');
+  km25d.textContent = `${avgPct>0?'+':''}${avgPct}% vs 2024`;
+  km25d.className = 'kdlt ' + (avgPct>=0?'up':'dn');
+
+  lineC.data.datasets[0].data = d.p24;
+  lineC.data.datasets[1].data = d.p25;
+  lineC.update();
+
+  const deltas = meses.map((_,i)=>+((d.p25[i]-d.p24[i])/d.p24[i]*100).toFixed(1));
+  const maxI = deltas.indexOf(Math.max(...deltas));
+  const minI = deltas.indexOf(Math.min(...deltas));
+  const stbl = deltas.reduce((bi,v,i)=>Math.abs(v)<Math.abs(deltas[bi])?i:bi,0);
+  document.getElementById('linePills').innerHTML = `
+    <div class="pill g">${meses[maxI]}/2025 pico: ${d.p25[maxI].toLocaleString('pt-BR')} (${deltas[maxI]>0?'+':''}${deltas[maxI]}% vs 2024)</div>
+    <div class="pill">${meses[minI]}/2025 vale: ${d.p25[minI].toLocaleString('pt-BR')} (${deltas[minI]}% vs 2024)</div>
+    <div class="pill a">${meses[stbl]}/2025 mais estável: ${deltas[stbl]>0?'+':''}${deltas[stbl]}%</div>`;
+
+  const total10 = d.top10cnt.reduce((a,b)=>a+b,0);
+  let cu=0;
+  const cumulPct = d.top10cnt.map(v=>{ cu+=v; return +(cu/total10*100).toFixed(1); });
+  const pColors = d.top10cnt.map((_,i)=>{
+    const t=i/(d.top10cnt.length-1||1);
+    return `rgba(${Math.round(126+t*(201-126))},${Math.round(20+t*(168-20))},${Math.round(26+t*(76-26))},0.85)`;
+  });
+  paretoC.data.labels = d.top10lbl;
+  paretoC.data.datasets[0].data = d.top10cnt;
+  paretoC.data.datasets[0].backgroundColor = pColors;
+  paretoC.data.datasets[1].data = cumulPct;
+  paretoC.update();
+
+  const tbody = document.getElementById('rankBody');
+  tbody.innerHTML = '';
+  let acum=0;
+  d.top10cnt.forEach((cnt,i)=>{
+    acum+=cnt;
+    const pct=(cnt/d.total*100).toFixed(1);
+    const acp=(acum/d.total*100).toFixed(1);
+    const bw=(cnt/d.top10cnt[0]*100).toFixed(0);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="rn">${i+1}</td>
+      <td style="max-width:145px"><div style="font-size:11px;line-height:1.35;word-break:break-word">${d.top10lbl[i]}</div>
+      <div class="bm" style="width:${bw}%"></div></td>
+      <td class="cc">${cnt.toLocaleString('pt-BR')}</td>
+      <td class="pc">${pct}%</td><td class="ac">${acp}%</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const oColors = d.orgcnt.map((_,i)=>`rgba(126,20,26,${0.82-i*0.09})`);
+  orgC.data.labels = d.orglbl;
+  orgC.data.datasets[0].data = d.orgcnt;
+  orgC.data.datasets[0].backgroundColor = oColors;
+  orgC.update();
+
+  donutC.data.labels = d.atulbl;
+  donutC.data.datasets[0].data = d.atucnt;
+  donutC.data.datasets[0].backgroundColor = donutPalette.slice(0, d.atulbl.length);
+  donutC.update();
+  const legEl = document.getElementById('donutLegend');
+  const totAtu = d.atucnt.reduce((a,b)=>a+b,0);
+  legEl.innerHTML = d.atulbl.slice(0,7).map((lbl,i)=>`
+    <div class="li">
+      <div class="ld" style="background:${donutPalette[i]}"></div>
+      <div class="ln">${lbl}</div>
+      <div class="lv">${(d.atucnt[i]/totAtu*100).toFixed(1)}%</div>
+    </div>`).join('');
+
+  deltaC.data.datasets[0].data = deltas;
+  deltaC.data.datasets[0].backgroundColor = deltas.map(v=>v>=0?'rgba(42,122,75,0.75)':'rgba(126,20,26,0.75)');
+  deltaC.update();
+  const up6 = deltas.filter(v=>v>=0).length;
+  const dn6 = deltas.filter(v=>v<0).length;
+  document.getElementById('deltaPills').innerHTML = `
+    <div class="pill g">${up6} ${up6===1?'mês':'meses'} de alta</div>
+    <div class="pill">${dn6} ${dn6===1?'mês':'meses'} de baixa</div>`;
+
+  const allV=[...d.p24,...d.p25];
+  const mnV=Math.min(...allV), mxV=Math.max(...allV);
+  const hbg=v=>`rgba(126,20,26,${(0.06+(v-mnV)/(mxV-mnV)*0.5).toFixed(2)})`;
+  let ht=`<table class="htbl"><thead><tr>
+    <th>Mês</th><th style="color:#4a7db5">2024</th><th style="color:#7e141a">2025</th><th>Δ%</th>
+  </tr></thead><tbody>`;
+  meses.forEach((m,i)=>{
+    const dv=((d.p25[i]-d.p24[i])/d.p24[i]*100).toFixed(1);
+    ht+=`<tr>
+      <td style="font-weight:500;color:var(--lbl)">${m}</td>
+      <td style="text-align:right;background:${hbg(d.p24[i])};font-family:'Roboto Mono',monospace">${d.p24[i].toLocaleString('pt-BR')}</td>
+      <td style="text-align:right;background:${hbg(d.p25[i])};font-family:'Roboto Mono',monospace">${d.p25[i].toLocaleString('pt-BR')}</td>
+      <td style="text-align:right;font-family:'Roboto Mono',monospace;color:${dv>=0?'#2a7a4b':'#7e141a'}">${dv>=0?'+':''}${dv}%</td>
+    </tr>`;
+  });
+  ht+=`</tbody></table>`;
+  document.getElementById('heatWrap').innerHTML = ht;
+}
+
+function updateComp(key) {
+  const inv = INV[key];
+  document.getElementById('cTotal').textContent = inv.total.toLocaleString('pt-BR');
+  document.getElementById('cFin').textContent = inv.finalizados.toLocaleString('pt-BR');
+  document.getElementById('cFinPct').textContent = `${inv.finalizadosPct.toFixed(1)}% do total`;
+  document.getElementById('cPend').textContent = inv.pendentes.toLocaleString('pt-BR');
+  document.getElementById('cPendPct').textContent = `${inv.pendentesPct.toFixed(1)}% do total`;
+  document.getElementById('cMed').textContent = `${inv.mediana}d`;
+  document.getElementById('cMedSub').textContent = `P75: ${inv.p75} dias · Média: ${inv.media}d`;
+
+  jeC.data.datasets[0].data = [inv.judiciais, inv.extrajudiciais];
+  jeC.update();
+  document.getElementById('jeLegend').innerHTML = `
+    <div class="li"><div class="ld" style="background:#4a7db5"></div><div class="ln">Judicial</div><div class="lv">${inv.judiciais.toLocaleString('pt-BR')}</div></div>
+    <div class="li"><div class="ld" style="background:#7e141a"></div><div class="ln">Extrajudicial</div><div class="lv">${inv.extrajudiciais.toLocaleString('pt-BR')}</div></div>`;
+
+  document.getElementById('tempoStats').innerHTML = inv.tempoStats.map(([k,v,lbl])=>`
+    <tr><td style="font-weight:500;color:var(--lbl)">${k}</td>
+    <td style="text-align:right;font-family:'Roboto Mono',monospace;color:var(--vm)">${v}</td>
+    <td style="font-size:11px;color:var(--mut)">${lbl}</td></tr>`).join('');
+
+  renderCompChart('assuntos', currentAssuntosSort);
+  renderCompChart('classes', currentClassesSort);
+}
+
+const labelsAll = ['Jan/24','Fev/24','Mar/24','Abr/24','Mai/24','Jun/24','Jul/24','Ago/24','Set/24','Out/24','Nov/24','Dez/24',
+                   'Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'];
+
+const STAT = {
+  caoj: {
+    volume: [800,900,850,950,900,800,850,900,1000,1100,1200,1300,1100,1200,1150,1300,1250,1100,1150,1200,1300,1400,1500,1400],
+    stlTrend: [850,860,870,880,890,900,920,950,1000,1050,1100,1150,1180,1200,1220,1250,1270,1280,1290,1300,1320,1350,1380,1400],
+    finRate:  [45,48,42,50,47,44,46,48,52,55,58,60,55,58,56,60,59,55,56,58,60,62,65,63],
+    medPerm:  [20,22,19,25,23,21,22,24,28,30,32,35,30,32,31,35,34,30,31,32,35,38,40,38],
+    acf: [0.6,0.4,0.3,0.2,0.1,0.05,0.02,0.01,-0.05,-0.1,-0.15,-0.2],
+    mean: 1100, ucl: 1500, lcl: 700,
+    mrVals: [null,100,50,100,50,100,50,50,100,100,100,100,200,100,50,150,50,150,50,50,100,100,100,100],
+    mrMean: 90, mrUcl: 280,
+    cusumPos: [0,0,0,0,0,0,0,50,150,250,350,450,550,650,750,850,950,1000,1050,1100,1200,1300,1400,1500],
+    cusumNeg: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    cusumH: 1000,
+    ljungP: 0.001,
+    acfNote: 'Tendência de crescimento sustentado identificada no período.'
+  },
+  gaeco: {
+    volume: [300,320,310,330,320,300,310,320,330,340,320,310,350,360,340,330,320,310,300,310,320,330,340,350],
+    stlTrend: [310,312,315,318,320,315,317,319,322,325,323,320,330,335,332,330,325,320,315,317,320,323,326,330],
+    finRate:  [15,16,14,17,16,15,16,17,18,19,17,16,20,21,19,18,17,16,15,16,17,18,19,20],
+    medPerm:  [600,610,590,620,610,600,610,620,630,640,620,610,650,660,640,630,620,610,600,610,620,630,640,650],
+    acf: [0.2,0.1,0.05,0,-0.05,-0.1,0,0.1,0.05,0,-0.05,0.1],
+    mean: 320, ucl: 380, lcl: 260,
+    mrVals: [null,20,10,20,10,20,10,10,10,10,20,10,40,10,20,10,10,10,10,10,10,10,10,10],
+    mrMean: 15, mrUcl: 50,
+    cusumPos: [0,0,0,0,0,0,0,0,0,0,0,0,10,20,30,40,30,20,10,10,20,30,40,50],
+    cusumNeg: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    cusumH: 150,
+    ljungP: 0.150,
+    acfNote: 'Fluxo estável sem sazonalidade marcante.'
+  }
+};
+
+function sortComp(tipo, criterio, btn) {
+  if (tipo === 'assuntos') currentAssuntosSort = criterio;
+  else currentClassesSort = criterio;
+  const allBtns = btn.closest('.sort-row').querySelectorAll('.sort-btn');
+  allBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCompChart(tipo, criterio);
+}
+
+function renderCompChart(tipo, criterio) {
+  const inv = INV[currentCao];
+  const src = tipo === 'assuntos' ? inv.assuntos.slice() : inv.classes.slice();
+  const chart = tipo === 'assuntos' ? assuntosC : classesC;
+  const mediaTaxa = tipo === 'assuntos' ? inv.mediaTaxaAssuntos : inv.mediaTaxaClasses;
+
+  if (criterio === 'vol')       src.sort((a,b) => b[1]-a[1]);
+  else if (criterio === 'rate_asc')  src.sort((a,b) => a[2]-b[2]);
+  else if (criterio === 'rate_desc') src.sort((a,b) => b[2]-a[2]);
+  else if (criterio === 'days') src.sort((a,b) => b[3]-a[3]);
+
+  const asc = src.slice().reverse();
+  chart.data.labels = asc.map(r => r[0]);
+  chart.data.datasets[0].data = asc.map(r => r[1]);
+  chart.data.datasets[0].backgroundColor = asc.map(r => r[2] >= mediaTaxa ? 'rgba(95,166,126,0.85)' : 'rgba(184,41,47,0.78)');
+  chart.options.scales.x.max = Math.max(...asc.map(r=>r[1])) * 1.6;
+  chart._sortedSrc = src;
+  chart.update();
+}
+
+let tsIndex = 0;
+let tsCharts = [];
+function buildTsChart0(key) {
+  const s = STAT[key];
+  return new Chart(document.getElementById('tsChart0'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[
+      { label:'Volume', data: s.volume, borderColor:'rgba(74,125,181,0.9)', backgroundColor:'rgba(74,125,181,0.1)', fill:true, tension:0.2 },
+      { label:'Tendência', data: s.stlTrend, borderColor:'#2a7a4b', pointRadius:0, tension:0.4, fill:false }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{grid:{display:false},ticks:{font:{size:9}}}, y:{grid,min:0} } }
+  });
+}
+function buildTsChart1(key) {
+  const s = STAT[key];
+  return new Chart(document.getElementById('tsChart1'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[{ label:'Taxa %', data: s.finRate, borderColor:'#2a7a4b', tension:0.3, fill:false }] },
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{grid:{display:false}}, y:{grid,ticks:{callback:v=>v+'%'}} } }
+  });
+}
+function buildTsChart2(key) {
+  const s = STAT[key];
+  return new Chart(document.getElementById('tsChart2'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[{ label:'Dias', data: s.medPerm, borderColor:'#e07b00', tension:0.3, fill:false }] },
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{grid:{display:false}}, y:{grid} } }
+  });
+}
+
+function initStatCharts(key) {
+  tsCharts.forEach(c => c.destroy());
+  tsCharts = [buildTsChart0(key), buildTsChart1(key), buildTsChart2(key)];
+  tsGoTo(0);
+  renderAcf(key);
+  renderImr(key);
+  renderCusum(key);
+}
+
+function tsGoTo(i) {
+  tsIndex = (i + 3) % 3;
+  ['tsChart0','tsChart1','tsChart2'].forEach((id,j) => document.getElementById(id).style.display = j === tsIndex ? '' : 'none');
+  document.querySelectorAll('.ts-dot').forEach((d,i) => d.classList.toggle('active', i===tsIndex));
+}
+function tsNav(dir) { tsGoTo(tsIndex + dir); }
+
+let acfC;
+function renderAcf(key) {
+  if (acfC) acfC.destroy();
+  const s = STAT[key];
+  acfC = new Chart(document.getElementById('acfChart'), {
+    type:'bar',
+    data:{ labels: Array.from({length:12},(_,i)=>`Lag ${i+1}`), datasets:[{ label:'ACF', data: s.acf, backgroundColor: 'rgba(74,125,181,0.7)' }] },
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{grid:{display:false}}, y:{grid,min:-1,max:1} } }
+  });
+  document.getElementById('acfExpl').textContent = s.acfNote;
+}
+
+let imrC, mrC;
+function renderImr(key) {
+  if (imrC) imrC.destroy();
+  const s = STAT[key];
+  imrC = new Chart(document.getElementById('imrChart'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[
+      { label:'Valor', data: s.volume, borderColor:'rgba(74,125,181,0.9)', fill:false },
+      { label:'Média', data: Array(24).fill(s.mean), borderColor:'#2a7a4b', borderDash:[5,5], pointRadius:0 },
+      { label:'UCL', data: Array(24).fill(s.ucl), borderColor:'rgba(126,20,26,0.5)', borderDash:[2,2], pointRadius:0 },
+      { label:'LCL', data: Array(24).fill(s.lcl), borderColor:'rgba(126,20,26,0.5)', borderDash:[2,2], pointRadius:0 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ticks:{font:{size:8}}}, y:{grid} } }
+  });
+}
+function renderMr(key) {
+  if (mrC) mrC.destroy();
+  const s = STAT[key];
+  mrC = new Chart(document.getElementById('mrChart'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[
+      { label:'MR', data: s.mrVals, borderColor:'#e07b00', fill:false },
+      { label:'UCL', data: Array(24).fill(s.mrUcl), borderColor:'rgba(126,20,26,0.5)', borderDash:[2,2], pointRadius:0 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ticks:{font:{size:8}}}, y:{grid} } }
+  });
+}
+function switchImr(tipo) {
+  document.getElementById('imrChart').style.display = tipo === 'i' ? '' : 'none';
+  document.getElementById('mrChart').style.display = tipo === 'mr' ? '' : 'none';
+  document.getElementById('btnImrI').classList.toggle('active', tipo === 'i');
+  document.getElementById('btnImrMR').classList.toggle('active', tipo === 'mr');
+  if(tipo === 'mr') renderMr(currentCao);
+}
+
+let cusumC;
+function renderCusum(key) {
+  if (cusumC) cusumC.destroy();
+  const s = STAT[key];
+  cusumC = new Chart(document.getElementById('cusumChart'), {
+    type:'line',
+    data:{ labels: labelsAll, datasets:[
+      { label:'C+', data: s.cusumPos, borderColor:'#7e141a', fill:false },
+      { label:'C-', data: s.cusumNeg, borderColor:'#4a7db5', fill:false }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ticks:{font:{size:8}}}, y:{grid} } }
+  });
+}
+
+function refreshAll() {
+  if (currentSub === 'prod') updateProd(currentCao);
+  else if (currentSub === 'comp') updateComp(currentCao);
+  else if (currentSub === 'stat') initStatCharts(currentCao);
+}
+
+function setCao(key, btn) {
+  document.querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCao = key;
+  refreshAll();
+}
+
+function setSub(key, btn) {
+  document.querySelectorAll('.sub-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSub = key;
+  ['panelProd','panelComp','panelStat','panelMetod'].forEach(id => document.getElementById(id).classList.toggle('active', id === 'panel'+key.charAt(0).toUpperCase()+key.slice(1)));
+  refreshAll();
+}
+
+initProdCharts();
+initCompCharts();
+updateProd('caoj');
+updateComp('caoj');
+initStatCharts('caoj');
+</script>
+</body>
+</html>
