@@ -212,6 +212,124 @@ function BellCurve({ w = 280, h = 80 }) {
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// Rio Negro hero — vitória-régia + nome flutuante
+// ─────────────────────────────────────────────────────────
+if (typeof document !== 'undefined' && !document.getElementById('rio-negro-keyframes')) {
+  const __rnStyle = document.createElement('style');
+  __rnStyle.id = 'rio-negro-keyframes';
+  __rnStyle.textContent = `
+    @keyframes rn-float-lily {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-8px) rotate(0.6deg); }
+    }
+    @keyframes rn-float-name {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+    @keyframes rn-drift-a {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50%      { transform: translate(-4px, -5px) rotate(2deg); }
+    }
+    @keyframes rn-drift-b {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50%      { transform: translate(5px, -4px) rotate(-1.5deg); }
+    }
+    @keyframes rn-shimmer {
+      0%, 100% { opacity: 0.45; transform: translateX(0); }
+      50%      { opacity: 0.75; transform: translateX(10px); }
+    }
+    @keyframes rn-glint {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 0.8; }
+    }
+    @keyframes rn-float-bayes {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(-3px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rn-anim { animation: none !important; }
+    }
+  `;
+  document.head.appendChild(__rnStyle);
+}
+
+// Vitória-régia vista de cima, com "HM" itálico no centro.
+function VitoriaRegia({ size = 290, label = 'HM' }) {
+  const r = size / 2;
+  const veinCount = 28;
+  const veins = [];
+  for (let i = 0; i < veinCount; i++) {
+    const angle = (i / veinCount) * Math.PI * 2 - Math.PI / 2;
+    // pula a nervura onde está a fenda (topo)
+    if (Math.abs(((angle + Math.PI / 2) + Math.PI) % (Math.PI * 2) - Math.PI) < 0.12) continue;
+    const x2 = Math.cos(angle) * (r * 0.86);
+    const y2 = Math.sin(angle) * (r * 0.86);
+    veins.push(
+      <line key={i} x1="0" y1="0" x2={x2} y2={y2} stroke="#0a1e12" strokeWidth="0.7" opacity="0.6"/>
+    );
+  }
+  const gradId = `leafGrad-${label}`;
+  return (
+    <svg width={size} height={size} viewBox={`${-r} ${-r} ${size} ${size}`} style={{ overflow: 'visible', display: 'block' }} aria-label="Vitória-régia com monograma HM">
+      <defs>
+        <radialGradient id={gradId} cx="38%" cy="30%">
+          <stop offset="0%"  stopColor="#456a52"/>
+          <stop offset="55%" stopColor="#264a34"/>
+          <stop offset="100%" stopColor="#13301f"/>
+        </radialGradient>
+      </defs>
+      {/* sombra na água */}
+      <ellipse cx="0" cy={r * 0.20} rx={r * 1.02} ry={r * 0.15} fill="rgba(0,0,0,0.55)" style={{ filter: 'blur(10px)' }}/>
+      {/* lábio externo */}
+      <circle cx="0" cy="0" r={r - 2} fill="#0e2418"/>
+      {/* superfície principal */}
+      <circle cx="0" cy="0" r={r - 7} fill={`url(#${gradId})`}/>
+      {/* nervuras radiais */}
+      <g>{veins}</g>
+      {/* anéis internos (borda dobrada característica) */}
+      <circle cx="0" cy="0" r={r - 14} fill="none" stroke="#0d2719" strokeWidth="1.5" opacity="0.65"/>
+      <circle cx="0" cy="0" r={r - 24} fill="none" stroke="#0d2719" strokeWidth="0.7"  opacity="0.4"/>
+      {/* fenda característica (V da folha) */}
+      <path d={`M -2.5 ${-(r - 3)} L 0 -3 L 2.5 ${-(r - 3)} Q 0 ${-(r - 1)} -2.5 ${-(r - 3)} Z`} fill="#06090d"/>
+      {/* highlight no canto superior esquerdo (reflexo) */}
+      <ellipse cx={-r * 0.22} cy={-r * 0.28} rx={r * 0.55} ry={r * 0.28} fill="rgba(210, 225, 190, 0.08)"/>
+      {/* botão de flor sutil na borda inferior-direita */}
+      <circle cx={r * 0.58} cy={r * 0.52} r={r * 0.055} fill="#f0ede4" opacity="0.7"/>
+      <circle cx={r * 0.58} cy={r * 0.52} r={r * 0.025} fill="#e2a45a" opacity="0.9"/>
+      {/* HM no centro */}
+      <text
+        x="0" y={r * 0.04}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily="'Newsreader', Georgia, serif"
+        fontSize={r * 0.68}
+        fontStyle="italic"
+        fontWeight="500"
+        fill="#f1eee5"
+        letterSpacing="-2"
+        style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.55))' }}
+      >
+        {label}
+      </text>
+    </svg>
+  );
+}
+
+// Folhinha menor, decorativa, derivando ao fundo
+function MiniLily({ size = 32, opacity = 1 }) {
+  const r = size / 2;
+  return (
+    <svg width={size} height={size} viewBox={`${-r} ${-r} ${size} ${size}`} aria-hidden="true">
+      <ellipse cx="0" cy={r * 0.22} rx={r * 0.95} ry={r * 0.15} fill="rgba(0,0,0,0.45)" style={{ filter: 'blur(2px)' }}/>
+      <circle r={r - 1} fill="#162e1f" opacity={opacity}/>
+      <circle r={r - 4} fill="#26442f" opacity={opacity}/>
+      <circle r={r - 8} fill="none" stroke="#0d2719" strokeWidth="0.6" opacity={opacity * 0.7}/>
+      <path d={`M 0 0 L -1 ${-(r - 2)} L 1 ${-(r - 2)} Z`} fill="#06090d"/>
+    </svg>
+  );
+}
+
 function DistribuicaoVariant({ paletteId = 'ufam' }) {
   const DS = PALETTES[paletteId] || PALETTES.ufam;
   const { isMobile, isTablet } = useViewport();
@@ -232,13 +350,12 @@ function DistribuicaoVariant({ paletteId = 'ufam' }) {
   // ─── responsive tokens ───
   const pagePadV = isMobile ? 64 : 64;
   const pagePadH = isMobile ? 18 : isTablet ? 36 : 72;
-  const heroTitleSize = isMobile ? 44 : isTablet ? 60 : 76;
+  const heroTitleSize = isMobile ? 32 : isTablet ? 44 : 56;
   const heroTitleLine = isMobile ? 1.02 : 0.95;
   const sectionGap = isMobile ? 36 : isTablet ? 44 : 56;
-  const bellW = isMobile ? 180 : 240;
-  const bellH = isMobile ? 56 : 72;
-  const shieldW = isMobile ? 72 : 96;
-  const shieldH = isMobile ? 84 : 110;
+  const lilyPadSize = isMobile ? 100 : isTablet ? 120 : 134;
+  const bellW = isMobile ? 140 : 170;
+  const bellH = isMobile ? 34 : 42;
 
   return (
     <PaletteCtx.Provider value={DS}>
@@ -256,79 +373,192 @@ function DistribuicaoVariant({ paletteId = 'ufam' }) {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* corner ticks — escondidos em mobile pra não amontoar */}
-      {!isMobile && (
-        <React.Fragment>
-          <div style={{ position: 'absolute', top: 24, left: 24, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: DS.inkFaint, letterSpacing: '0.1em' }}>
-            ◇ portfolio.v2026
-          </div>
-          <div style={{ position: 'absolute', top: 24, right: 24, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: DS.inkFaint, letterSpacing: '0.1em' }}>
+      {/* HERO — Rio Negro · vitória-régia · flutuante (compacto) */}
+      <header style={{
+        marginTop: isMobile ? 8 : 12,
+        marginBottom: isMobile ? 28 : 40,
+        position: 'relative',
+      }}>
+        <div style={{
+          position: 'relative',
+          borderRadius: isMobile ? 12 : 18,
+          overflow: 'hidden',
+          background: 'radial-gradient(ellipse at 30% 35%, #1a2733 0%, #0c1218 55%, #06090d 100%)',
+          padding: isMobile ? '22px 20px 22px' : isTablet ? '22px 32px 24px' : '22px 44px 24px',
+          boxShadow: 'inset 0 0 80px rgba(0,0,0,0.5), 0 8px 28px rgba(0,0,0,0.35)',
+          border: '1px solid rgba(90, 120, 145, 0.16)',
+        }}>
+          {/* Turbulência da água (somente desktop — feTurbulence é pesado) */}
+          {!isMobile && (
+            <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.55 }} aria-hidden="true">
+              <defs>
+                <filter id="rnWater" x="0%" y="0%" width="100%" height="100%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.008 0.022" numOctaves="2" seed="5">
+                    <animate attributeName="baseFrequency" dur="50s"
+                      values="0.008 0.022;0.014 0.030;0.008 0.022" repeatCount="indefinite"/>
+                  </feTurbulence>
+                  <feColorMatrix values="0 0 0 0 0.40
+                                         0 0 0 0 0.55
+                                         0 0 0 0 0.68
+                                         0 0 0 0.09 0"/>
+                </filter>
+              </defs>
+              <rect width="100%" height="100%" filter="url(#rnWater)"/>
+            </svg>
+          )}
+
+          {/* Reflexos de luz na água */}
+          <div className="rn-anim" style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: `
+              radial-gradient(ellipse 460px 90px at 22% 18%, rgba(140, 175, 200, 0.11) 0%, transparent 70%),
+              radial-gradient(ellipse 340px 70px at 78% 78%, rgba(110, 145, 170, 0.08) 0%, transparent 70%)
+            `,
+            animation: 'rn-shimmer 14s ease-in-out infinite alternate',
+          }}/>
+
+          {/* Folhinhas derivando (decoração) */}
+          {!isMobile && (
+            <React.Fragment>
+              <div className="rn-anim" style={{ position: 'absolute', top: '11%',  left: '7%',  animation: 'rn-drift-a 11s ease-in-out infinite' }}>
+                <MiniLily size={38} opacity={0.85}/>
+              </div>
+              <div className="rn-anim" style={{ position: 'absolute', bottom: '22%', left: '11%', animation: 'rn-drift-b 14s ease-in-out infinite' }}>
+                <MiniLily size={22} opacity={0.7}/>
+              </div>
+              <div className="rn-anim" style={{ position: 'absolute', bottom: '10%', right: '8%',  animation: 'rn-drift-a 17s ease-in-out infinite' }}>
+                <MiniLily size={26} opacity={0.65}/>
+              </div>
+              <div className="rn-anim" style={{ position: 'absolute', top: '20%',   right: '18%', animation: 'rn-drift-b 19s ease-in-out infinite' }}>
+                <MiniLily size={16} opacity={0.5}/>
+              </div>
+            </React.Fragment>
+          )}
+          {isMobile && (
+            <React.Fragment>
+              <div className="rn-anim" style={{ position: 'absolute', top: '8%',  left: '8%',  animation: 'rn-drift-a 11s ease-in-out infinite' }}>
+                <MiniLily size={22} opacity={0.7}/>
+              </div>
+              <div className="rn-anim" style={{ position: 'absolute', bottom: '14%', right: '10%', animation: 'rn-drift-b 14s ease-in-out infinite' }}>
+                <MiniLily size={18} opacity={0.6}/>
+              </div>
+            </React.Fragment>
+          )}
+
+          {/* Marca d'água — coordenadas de Manaus (canto sup. direito) */}
+          <div style={{ position: 'absolute', top: isMobile ? 10 : 12, right: isMobile ? 16 : 20, fontFamily: '"JetBrains Mono", monospace', fontSize: isMobile ? 9 : 10, color: 'rgba(232,230,223,0.38)', letterSpacing: '0.16em', whiteSpace: 'nowrap' }}>
             manaus · −3.10°, −60.02°
           </div>
-        </React.Fragment>
-      )}
-      {isMobile && (
-        <div style={{ position: 'absolute', top: 18, left: 18, right: 18, display: 'flex', justifyContent: 'space-between', fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: DS.inkFaint, letterSpacing: '0.08em' }}>
-          <span>◇ portfolio.v2026</span>
-          <span>−3.10°, −60.02°</span>
-        </div>
-      )}
 
-      {/* HERO */}
-      <header style={{
-        marginTop: isMobile ? 24 : 32,
-        marginBottom: isMobile ? 40 : 60,
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '1fr auto',
-        alignItems: isMobile ? 'start' : 'end',
-        gap: isMobile ? 28 : 32,
-      }}>
-        <div style={{ order: isMobile ? 2 : 1 }}>
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: isMobile ? 10 : 11, letterSpacing: '0.18em', color: DS.red, textTransform: 'uppercase', marginBottom: isMobile ? 14 : 18 }}>
-            ▌ bacharelando · estatística · ufam
-          </div>
-          <h1 style={{ fontWeight: 700, fontSize: heroTitleSize, lineHeight: heroTitleLine, margin: 0, letterSpacing: '-0.035em', color: DS.ink }}>
-            Hugo Matheus<br/>Rocha<span style={{ color: DS.red }}>.</span>
-          </h1>
-          <p style={{ marginTop: 20, fontSize: isMobile ? 15 : 17, color: DS.inkSoft, maxWidth: 520, lineHeight: 1.55 }}>
-            Estatístico em formação. Transformo ruído em sinal com pipelines reprodutíveis,
-            controle de processo e séries temporais.
-          </p>
-        </div>
-
-        <div style={{
-          order: isMobile ? 1 : 2,
-          textAlign: isMobile ? 'left' : 'right',
-          display: 'flex',
-          flexDirection: isMobile ? 'row' : 'column',
-          alignItems: isMobile ? 'center' : 'flex-end',
-          justifyContent: isMobile ? 'space-between' : 'flex-start',
-          gap: isMobile ? 16 : 18,
-          width: '100%',
-        }}>
-          {/* HM shield monogram */}
-          <div style={{ position: 'relative', flexShrink: 0 }}>
-            <svg width={shieldW} height={shieldH} viewBox="0 0 80 92">
-              <path d="M 8 6 L 72 6 L 72 50 Q 72 78 40 88 Q 8 78 8 50 Z"
-                fill={DS.panel} stroke={DS.red} strokeWidth="2"/>
-              <ellipse cx="40" cy="34" rx="18" ry="9" fill={DS.accent} opacity="0.85" transform="rotate(-18 40 34)"/>
-              <line x1="22" y1="38" x2="58" y2="30" stroke={DS.panel} strokeWidth="1.2"/>
-              <ellipse cx="40" cy="48" rx="18" ry="9" fill={DS.red} opacity="0.85" transform="rotate(18 40 48)"/>
-              <line x1="22" y1="44" x2="58" y2="52" stroke={DS.panel} strokeWidth="1.2"/>
-              <text x="40" y="76" textAnchor="middle" fontFamily="Newsreader, serif" fontSize="18" fill={DS.red} fontStyle="italic">HM</text>
-            </svg>
-            <div style={{
-              fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
-              color: DS.redSoft, letterSpacing: '0.18em',
-              textAlign: 'center', marginTop: 2,
-            }}>
-              EST · UFAM
+          {/* Conteúdo */}
+          <div style={{
+            position: 'relative', zIndex: 2,
+            display: 'grid',
+            gridTemplateColumns: (isMobile || isTablet) ? '1fr' : '1fr auto',
+            gridTemplateAreas: (isMobile || isTablet)
+              ? '"lily" "bayes" "name"'
+              : '"name lily" "bayes bayes"',
+            alignItems: 'center',
+            justifyItems: (isMobile || isTablet) ? 'center' : 'stretch',
+            rowGap: isMobile ? 18 : isTablet ? 22 : 18,
+            columnGap: isMobile ? 0 : isTablet ? 0 : 40,
+          }}>
+            {/* Bayes flutuando no meio (entre folha e nome em mobile; abaixo na desktop) */}
+            <div
+              className="rn-anim"
+              style={{
+                gridArea: 'bayes',
+                justifySelf: 'center',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: isMobile ? 10 : 11.5,
+                color: 'rgba(232,230,223,0.45)',
+                letterSpacing: '0.10em',
+                whiteSpace: 'nowrap',
+                animation: 'rn-float-name 8s ease-in-out infinite',
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            >
+              P(A|B) = P(B|A)·P(A) / P(B)
             </div>
-          </div>
-          <div style={{ flexShrink: 1, minWidth: 0, maxWidth: isMobile ? 200 : '100%' }}>
-            <BellCurve w={bellW} h={bellH} />
-            <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: DS.inkFaint, marginTop: 4, textAlign: isMobile ? 'center' : 'left' }}>
-              fig. 0 — N(μ, σ²)
+            {/* Nome flutuante (lado esquerdo / abaixo no mobile) */}
+            <div
+              className="rn-anim"
+              style={{
+                gridArea: 'name',
+                animation: 'rn-float-name 7s ease-in-out infinite',
+                textAlign: (isMobile || isTablet) ? 'center' : 'left',
+                width: '100%',
+              }}
+            >
+              <div style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: isMobile ? 10 : 11,
+                letterSpacing: '0.22em',
+                color: DS.red,
+                textTransform: 'uppercase',
+                marginBottom: isMobile ? 10 : 12,
+              }}>
+                ▌ bacharelando · estatística · ufam
+              </div>
+
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <h1 style={{
+                  fontWeight: 700,
+                  fontSize: heroTitleSize,
+                  lineHeight: heroTitleLine,
+                  margin: 0,
+                  letterSpacing: '-0.035em',
+                  color: '#f1eee5',
+                  textShadow: '0 6px 28px rgba(0,0,0,0.65)',
+                  position: 'relative',
+                  zIndex: 2,
+                }}>
+                  Hugo Matheus<br/>Rocha<span style={{ color: DS.red }}>.</span>
+                </h1>
+              </div>
+
+              <p style={{
+                marginTop: isMobile ? 12 : 16,
+                fontSize: isMobile ? 14 : 15.5,
+                color: 'rgba(232, 230, 223, 0.78)',
+                maxWidth: 480,
+                marginLeft: (isMobile || isTablet) ? 'auto' : 0,
+                marginRight: (isMobile || isTablet) ? 'auto' : 0,
+                lineHeight: 1.55,
+              }}>
+                Estatístico em formação. Transformo ruído em sinal com pipelines reprodutíveis,
+                controle de processo e séries temporais.
+              </p>
+            </div>
+
+            {/* Vitória-régia com HM + curva normal (lado direito / topo no mobile) */}
+            <div
+              className="rn-anim"
+              style={{
+                gridArea: 'lily',
+                animation: 'rn-float-lily 9s ease-in-out infinite',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 6,
+              }}
+            >
+              <VitoriaRegia size={lilyPadSize}/>
+              <div style={{ marginTop: 2 }}>
+                <BellCurve w={bellW} h={bellH}/>
+              </div>
+              <div style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: isMobile ? 9 : 10,
+                color: 'rgba(232, 230, 223, 0.45)',
+                letterSpacing: '0.08em',
+                textAlign: 'center',
+                marginTop: -2,
+                whiteSpace: 'nowrap',
+              }}>
+                fig. 0 — N(μ, σ²)
+              </div>
             </div>
           </div>
         </div>
