@@ -4,37 +4,939 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#14171c">
-<title>Hugo Matheus Rocha — Portfolio</title>
+<title>Hugo Matheus Rocha · Portfolio</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
 <style>
-  html, body { margin: 0; padding: 0; min-height: 100%; background: #14171c; }
-  body { font-family: 'Manrope', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  /* Evita scroll horizontal acidental em telas estreitas */
-  html, body { overflow-x: hidden; }
-  /* Toques mais confortáveis em mobile */
-  a { -webkit-tap-highlight-color: transparent; }
+/* ───────────────────────────────────────────────
+   NOITE ACADÊMICA · proporções do portfólio main
+   água do Solimões ao fundo do hero
+─────────────────────────────────────────────── */
+:root{
+  --bg:#14171c;
+  --panel:#1c2027;
+  --chip:#15181d;
+  --ink:#e8e6df;
+  --soft:#a0a4ac;
+  --faint:#5c6068;
+  --red:#e08982;          /* acento quente */
+  --green:#6db589;
+  --amber:#e2a45a;
+  --rule:rgba(232,230,223,0.10);
+  --grid:rgba(232,230,223,0.05);
+  --wrap:760px;
+  --pad:32px;
+  --ease-out:cubic-bezier(.22,.8,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0;min-height:100%;overflow-x:hidden}
+body{
+  background:var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:40px 40px;
+  color:var(--ink);
+  font-family:'Manrope',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{-webkit-tap-highlight-color:transparent;color:inherit}
+::selection{background:rgba(224,137,130,.32);color:#fff}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:2px}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad)}
+@media (max-width:640px){ :root{--pad:20px} }
+
+/* ───────────────────────────────────────────────
+   NAV
+─────────────────────────────────────────────── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:rgba(20,23,28,0.88);
+  border-bottom:1px solid var(--rule);
+}
+.nav-in{
+  max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad);
+  height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:17px;
+  letter-spacing:-0.01em;color:var(--ink);
+}
+.brand svg{display:block}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{
+  position:relative;text-decoration:none;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  letter-spacing:.12em;text-transform:lowercase;color:var(--soft);
+  padding:6px 0;transition:color .25s;
+}
+.nav-link:hover{color:var(--red)}
+.u-wave{
+  position:absolute;left:0;bottom:0;height:6px;width:100%;
+  overflow:hidden;pointer-events:none;
+  clip-path:inset(0 100% 0 0);
+  transition:clip-path .35s var(--ease-out);
+}
+.nav-link:hover .u-wave,.nav-link:focus-visible .u-wave{clip-path:inset(0 0 0 0)}
+.u-wave svg{display:block;width:200%;height:6px;animation:waveSlide 1.1s linear infinite}
+@keyframes waveSlide{to{transform:translateX(-50%)}}
+.gh-link{color:var(--faint);display:inline-flex;padding:6px 0;transition:color .25s}
+.gh-link:hover{color:var(--red)}
+@media (max-width:640px){ .nav-links{gap:16px} .nav-link{font-size:11px;letter-spacing:.08em} }
+
+/* ───────────────────────────────────────────────
+   HERO · bloco d'água com o Solimões ao fundo
+─────────────────────────────────────────────── */
+.hero{max-width:var(--wrap);margin-inline:auto;padding:64px var(--pad) 48px;animation:fadeUp .6s ease both}
+.water-block{
+  position:relative;border-radius:16px;overflow:hidden;
+  min-height:208px;
+  padding:32px 48px;
+  background:radial-gradient(ellipse at 30% 35%, #1a2733 0%, #0c1218 55%, #06090d 100%);
+  box-shadow:inset 0 0 80px rgba(0,0,0,0.5), 0 8px 28px rgba(0,0,0,0.35);
+  border:1px solid rgba(90,120,145,0.16);
+}
+#aguas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.water-scrim{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(to right, rgba(8,11,15,.42) 0%, rgba(8,11,15,.62) 55%, rgba(8,11,15,.8) 100%),
+    radial-gradient(ellipse 75% 60% at 50% 45%, transparent 55%, rgba(2,4,7,.5) 100%);
+}
+.coords{
+  position:absolute;top:12px;right:16px;z-index:3;
+  font-size:9px;letter-spacing:.16em;color:rgba(232,230,223,.42);white-space:nowrap;
+}
+.hero-row{
+  position:relative;z-index:2;
+  display:flex;align-items:center;gap:32px;
+}
+.lily-col{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:floatLily 9s ease-in-out infinite;will-change:transform;
+}
+.lily-col svg#vitoria{width:140px;height:auto}
+@keyframes floatLily{
+  0%,100%{transform:translate3d(var(--plx,0px),0,0) rotate(0deg)}
+  50%{transform:translate3d(var(--plx,0px),-8px,0) rotate(.6deg)}
+}
+.fig-cap{font-size:9px;letter-spacing:.08em;color:rgba(232,230,223,.4);white-space:nowrap}
+
+.hero-text{animation:floatName 7s ease-in-out infinite}
+@keyframes floatName{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.h-name{
+  margin:0 0 14px;font-weight:800;
+  font-size:44px;line-height:.95;letter-spacing:-0.035em;color:#f1eee5;
+  text-shadow:0 6px 28px rgba(0,0,0,0.75);
+}
+.h-name .dot{color:var(--red)}
+.h-letter{
+  display:inline-block;opacity:0;transform:translateY(.5em);filter:blur(6px);
+  transition:opacity .8s var(--ease-out),transform .8s var(--ease-out),filter .8s var(--ease-out);
+  transition-delay:var(--d,0s);
+}
+.hero.ready .h-letter{opacity:1;transform:translateY(0);filter:blur(0)}
+.h-tag{
+  font-size:15px;color:rgba(232,230,223,.8);max-width:380px;line-height:1.55;margin:0 0 14px;
+  text-shadow:0 2px 12px rgba(0,0,0,.55);
+}
+.h-bayes{font-size:11px;letter-spacing:.08em;color:rgba(232,230,223,.5)}
+
+/* linha de atalhos abaixo do bloco (substitui a bio redundante) */
+.quick-row{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;
+}
+.quick-row a{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--red);
+  padding:7px 14px;border:1px solid var(--rule);border-radius:999px;
+  background:rgba(224,137,130,.06);
+  transition:border-color .25s,background .25s,transform .25s;
+}
+.quick-row a:hover{border-color:var(--red);background:rgba(224,137,130,.12);transform:translateY(-2px)}
+.quick-row a .arr{opacity:.65;transition:transform .25s}
+.quick-row a:hover .arr{transform:translate(2px,-2px)}
+
+@media (max-width:900px){
+  .hero-row{flex-direction:column;text-align:center;gap:18px}
+}
+@media (max-width:640px){
+  .hero{padding:44px var(--pad) 36px}
+  .water-block{padding:26px 22px;min-height:auto}
+  .lily-col svg#vitoria{width:108px}
+  .h-name{font-size:30px}
+  .h-tag{font-size:13.5px}
+  .quick-row{justify-content:center}
+}
+
+/* ───────────────────────────────────────────────
+   SEÇÕES
+─────────────────────────────────────────────── */
+section{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad);padding-top:56px}
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.sec-title .lbl{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--red)}
+.sec-title .line{flex:1;height:1px;background:var(--rule)}
+
+/* ───────────────────────────────────────────────
+   PROJETOS · lista editorial
+─────────────────────────────────────────────── */
+.cards{border-left:1px solid var(--rule);margin-left:32px;padding-left:32px;perspective:1200px}
+@media (max-width:640px){ .cards{border-left:none;margin-left:0;padding-left:0} }
+
+.card{
+  position:relative;
+  display:grid;grid-template-columns:1fr 140px;gap:32px;
+  padding:28px 0;border-bottom:1px solid var(--rule);
+  transition:transform .5s var(--ease-out);
+  transform-style:preserve-3d;will-change:transform;
+}
+.card-stripe{
+  position:absolute;left:-33px;top:0;bottom:0;width:2px;
+  background:var(--red);transform:scaleY(0);transform-origin:top;
+  transition:transform .4s var(--ease-out);
+}
+.card:hover .card-stripe{transform:scaleY(1)}
+@media (max-width:640px){ .card-stripe{display:none} }
+
+.card-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.pid{font-size:10.5px;color:var(--red);letter-spacing:.06em}
+.musig{font-size:10px;color:var(--faint)}
+.pdate{font-size:10px;color:var(--faint);margin-left:auto}
+.card-title{
+  margin:0 0 10px;font-size:21px;font-weight:600;
+  letter-spacing:-0.015em;line-height:1.2;color:var(--ink);transition:color .3s;
+}
+.card:hover .card-title{color:var(--red)}
+.card-text{margin:0 0 14px;font-size:13.5px;line-height:1.65;color:var(--soft)}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  padding:3px 8px 3px 6px;color:var(--soft);
+  background:var(--chip);border:1px solid var(--rule);
+}
+.tag i{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tag[data-k="stack"] i{background:var(--red)}
+.tag[data-k="lib"] i{background:var(--green)}
+.tag[data-k="method"] i{background:var(--amber)}
+.tag[data-k="ctx"] i{background:var(--faint)}
+
+.plink{
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  font-size:11.5px;font-weight:600;letter-spacing:.04em;color:var(--red);
+}
+.plink .lab{border-bottom:1.5px solid var(--red);padding-bottom:1px}
+.plink .arr{transition:transform .3s var(--ease-out)}
+.plink:hover .arr{transform:translateX(5px)}
+
+.card-viz{
+  border-left:1px dashed var(--rule);padding-left:20px;
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+}
+.viz{width:100%;height:auto;display:block;overflow:visible}
+.figcap{font-size:9.5px;letter-spacing:.06em;color:var(--faint)}
+@media (max-width:640px){
+  .card{grid-template-columns:1fr;gap:14px}
+  .card-viz{border-left:none;border-top:1px dashed var(--rule);padding:14px 0 0}
+}
+.n-note{padding-top:16px;font-size:10px;color:var(--faint)}
+
+/* viz animations */
+.viz .draw{transition:stroke-dashoffset 1.6s var(--ease-out)}
+.viz .pt{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease-out);transition-delay:var(--d,0s)}
+.viz.play .pt{transform:scale(1)}
+.viz .halo{transform-box:fill-box;transform-origin:center;opacity:0}
+.viz.play .halo{animation:halo 1.7s ease-out infinite;animation-delay:1.5s}
+@keyframes halo{0%{transform:scale(.4);opacity:.85}100%{transform:scale(3.2);opacity:0}}
+.viz .bar{transform:scaleY(0);transform-box:fill-box;transform-origin:bottom;transition:transform .6s var(--ease-out);transition-delay:var(--d,0s)}
+.viz.play .bar{transform:scaleY(1)}
+.viz .fdot{opacity:0}
+.viz.play .fdot{animation:flowDot 3s linear infinite;animation-delay:var(--d,0s)}
+@keyframes flowDot{0%{transform:translateX(0);opacity:0}6%{opacity:1}90%{opacity:1}100%{transform:translateX(120px);opacity:0}}
+.viz .fbox{transform-box:fill-box;transform-origin:center}
+.viz.play .fbox{animation:boxGlow 3s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes boxGlow{0%,100%{filter:none}14%{filter:drop-shadow(0 0 5px currentColor)}28%{filter:none}}
+.viz .late{opacity:0;transition:opacity .6s ease;transition-delay:var(--d,1.6s)}
+.viz.play .late{opacity:1}
+.noanim .pt,.noanim .bar,.noanim .late{transition:none !important}
+
+/* ───────────────────────────────────────────────
+   SOBRE
+─────────────────────────────────────────────── */
+.sobre-p{margin:0 0 32px;max-width:600px;font-size:15px;line-height:1.72;color:var(--soft)}
+.sobre-p strong{color:var(--ink);font-weight:600}
+.tech-grid{display:flex;gap:24px;flex-wrap:wrap}
+.tech-col{flex:1;min-width:180px}
+.tech-lbl{display:flex;align-items:center;gap:7px;margin-bottom:8px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.tech-lbl i{width:5px;height:5px;border-radius:50%}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:3px 9px;border-radius:999px;cursor:default;
+  border:1px solid color-mix(in srgb, var(--c) 28%, transparent);
+  color:var(--c);background:color-mix(in srgb, var(--c) 14%, transparent);
+  transition:transform .25s var(--ease-out),background .25s;
+}
+.chip:hover{transform:translateY(-2px);background:color-mix(in srgb, var(--c) 24%, transparent)}
+
+/* ───────────────────────────────────────────────
+   CONTATO
+─────────────────────────────────────────────── */
+.contact-grid{display:flex;gap:24px}
+.ccard{
+  flex:1;display:flex;flex-direction:column;gap:4px;text-decoration:none;
+  padding:16px 20px;border-radius:8px;background:var(--panel);border:1px solid var(--rule);
+  transition:transform .35s var(--ease-out),border-color .3s;will-change:transform;
+}
+.ccard:hover{border-color:var(--red)}
+.ccard .top{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--red);text-transform:lowercase;display:flex;gap:8px;align-items:center}
+.ccard .top .arr{transition:transform .3s}
+.ccard:hover .top .arr{transform:translate(3px,-1px)}
+.ccard .sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);margin-top:2px;word-break:break-all}
+@media (max-width:640px){ .contact-grid{flex-direction:column} }
+
+/* ───────────────────────────────────────────────
+   FOOTER
+─────────────────────────────────────────────── */
+footer{
+  max-width:var(--wrap);margin:64px auto 0;padding:64px var(--pad) 40px;
+  border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint);
+}
+@media (max-width:640px){ footer{font-size:9.5px;padding-top:48px} }
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s var(--ease-out);transition-delay:var(--rd,0s)}
+.reveal.in{opacity:1;transform:translateY(0)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .reveal{opacity:1;transform:none}
+  .h-letter{opacity:1;transform:none;filter:none}
+}
 </style>
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
-
 <body>
 
-<div id="root"></div>
+<!-- ░ NAV -->
+<nav class="nav" aria-label="navegação principal">
+  <div class="nav-in">
+    <a class="brand" href="#topo" aria-label="início">
+      <svg width="26" height="26" viewBox="-13 -13 26 26" aria-hidden="true">
+        <circle r="12" fill="#162e1f"/>
+        <circle r="9" fill="#26442f"/>
+        <circle r="6" fill="none" stroke="#0d2719" stroke-width="0.8"/>
+        <path d="M -1 -12 L 0 -2 L 1 -12 Z" fill="#06090d"/>
+      </svg>
+      <span>Hugo Matheus</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#projetos">projetos
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="nav-link" href="#sobre">sobre
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="nav-link" href="#contato">contato
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="gh-link" href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
 
-<script type="text/babel" src="app.jsx"></script>
+<!-- ░ HERO · bloco d'água com o Solimões ao fundo -->
+<header class="hero" id="topo">
+  <div class="water-block" id="waterBlock">
+    <canvas id="aguas" aria-hidden="true"></canvas>
+    <div class="water-scrim" aria-hidden="true"></div>
+    <div class="coords mono">manaus · −3.10°, −60.02° · encontro das águas</div>
 
-<script type="text/babel">
-  ReactDOM.createRoot(document.getElementById('root')).render(
-    <DistribuicaoVariant paletteId="noite"/>
-  );
+    <div class="hero-row">
+      <div class="lily-col" id="heroLily">
+        <svg id="vitoria" width="240" height="240" viewBox="-120 -120 240 240" style="overflow:visible" role="img" aria-label="Vitória-régia com monograma HM">
+          <defs>
+            <radialGradient id="leafGrad" cx="38%" cy="30%">
+              <stop offset="0%" stop-color="#456a52"/>
+              <stop offset="55%" stop-color="#264a34"/>
+              <stop offset="100%" stop-color="#13301f"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="0" cy="26" rx="122" ry="19" fill="rgba(0,0,0,0.55)" style="filter:blur(10px)"/>
+          <circle r="118" fill="#0e2418"/>
+          <circle r="113" fill="url(#leafGrad)"/>
+          <g id="veins"></g>
+          <circle r="106" fill="none" stroke="#0d2719" stroke-width="1.5" opacity="0.65"/>
+          <circle r="96" fill="none" stroke="#0d2719" stroke-width="0.7" opacity="0.4"/>
+          <path d="M -3 -117 L 0 -4 L 3 -117 Q 0 -119 -3 -117 Z" fill="#06090d"/>
+          <ellipse cx="-26" cy="-34" rx="66" ry="34" fill="rgba(210,225,190,0.08)"/>
+          <circle cx="70" cy="62" r="6.5" fill="#f0ede4" opacity="0.7"/>
+          <circle cx="70" cy="62" r="3" fill="#e2a45a" opacity="0.9"/>
+          <text x="0" y="6" text-anchor="middle" dominant-baseline="central"
+                font-family="'Newsreader',Georgia,serif" font-size="82" font-style="italic" font-weight="500"
+                fill="#f1eee5" letter-spacing="-2" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,0.55))">HM</text>
+        </svg>
+        <svg id="bell" width="100%" height="38" viewBox="0 0 200 38" style="max-width:200px" aria-hidden="true"></svg>
+        <div class="fig-cap mono">fig. 0 · N(μ, σ²)</div>
+      </div>
+
+      <div class="hero-text">
+        <h1 class="h-name" id="heroName" aria-label="Hugo Matheus Rocha"></h1>
+        <p class="h-tag">Estatístico em formação. Transformo ruído em sinal com pipelines reprodutíveis, controle de processo e séries temporais.</p>
+        <div class="h-bayes mono">P(A|B) = P(B|A)·P(A) / P(B)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-row">
+    <a href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><span class="arr">↗</span></a>
+    <a href="mailto:hugo-matheus.rocha@ufam.edu.br"><span>E-mail</span><span class="arr">↗</span></a>
+    <a href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span class="arr">↗</span></a>
+  </div>
+</header>
+
+<!-- ░ PROJETOS -->
+<section id="projetos">
+  <div class="sec-title reveal"><span class="lbl mono">§ projetos selecionados</span><span class="line"></span></div>
+  <div class="cards">
+
+    <article class="card reveal" data-tilt style="--rd:.05s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta mono"><span class="pid">p01</span><span class="musig">μ = 0.92 · σ = 0.04</span><span class="pdate">2026</span></div>
+        <h3 class="card-title">Monitoramento de Produtividade Pública</h3>
+        <p class="card-text">Dashboard interativo aplicando Controle Estatístico de Processo (CEP) para detecção de anomalias e decomposição STL para análise de tendências em métricas processuais.</p>
+        <div class="tags">
+          <span class="tag" data-k="stack"><i></i>HTML/CSS</span>
+          <span class="tag" data-k="stack"><i></i>JavaScript</span>
+          <span class="tag" data-k="lib"><i></i>Chart.js</span>
+          <span class="tag" data-k="method"><i></i>CEP</span>
+          <span class="tag" data-k="method"><i></i>STL</span>
+        </div>
+        <a class="plink mono" href="./dashboard-ministerio-publico.html" target="_blank" rel="noopener noreferrer"><span class="lab">Acessar Dashboard</span><span class="arr">→</span></a>
+      </div>
+      <div class="card-viz">
+        <svg class="viz" data-kind="imr" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 1 · carta I-MR</div>
+      </div>
+    </article>
+
+    <article class="card reveal" data-tilt style="--rd:.1s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta mono"><span class="pid">p02</span><span class="musig">μ = 50+ · σ = arq</span><span class="pdate">2025</span></div>
+        <h3 class="card-title">Pipeline ETL de Dados Médicos</h3>
+        <p class="card-text">Consolidação de mais de 50 arquivos Excel com DuckDB para processamento analítico de alta velocidade e Regex para padronização diagnóstica. Dados integralmente anonimizados.</p>
+        <div class="tags">
+          <span class="tag" data-k="stack"><i></i>Python</span>
+          <span class="tag" data-k="lib"><i></i>DuckDB</span>
+          <span class="tag" data-k="lib"><i></i>Pandas</span>
+          <span class="tag" data-k="method"><i></i>Regex</span>
+          <span class="tag" data-k="method"><i></i>Anonimização</span>
+        </div>
+        <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/01_SQL_Python_ETL.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+      </div>
+      <div class="card-viz">
+        <svg class="viz" data-kind="flow" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 2 · pipeline ETL</div>
+      </div>
+    </article>
+
+    <article class="card reveal" data-tilt style="--rd:.15s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta mono"><span class="pid">p03</span><span class="musig">μ = 24 · σ = meses</span><span class="pdate">2025</span></div>
+        <h3 class="card-title">AED de Séries Temporais Processuais</h3>
+        <p class="card-text">Inventários de 24 meses analisados com STL, testes de estacionariedade (ADF, KPSS), autocorrelação (Ljung-Box), tendência (Mann-Kendall) e CEP via I-MR e CUSUM. Dados sintéticos.</p>
+        <div class="tags">
+          <span class="tag" data-k="stack"><i></i>Python</span>
+          <span class="tag" data-k="lib"><i></i>DuckDB</span>
+          <span class="tag" data-k="lib"><i></i>Statsmodels</span>
+          <span class="tag" data-k="method"><i></i>STL</span>
+          <span class="tag" data-k="method"><i></i>CEP</span>
+        </div>
+        <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/03_AED_inventario_estatistica_aplicada.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+      </div>
+      <div class="card-viz">
+        <svg class="viz" data-kind="cusum" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 3 · CUSUM · h = 4,17</div>
+      </div>
+    </article>
+
+    <article class="card reveal" data-tilt style="--rd:.2s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta mono"><span class="pid">p04</span><span class="musig">μ = acc · σ = ↑</span><span class="pdate">2025</span></div>
+        <h3 class="card-title">Previsão de Evasão Escolar</h3>
+        <p class="card-text">Disciplina de Introdução à Ciência de Dados (UFAM). Classificação com Scikit-learn para prever sucesso ou risco de evasão sobre dados públicos da educação.</p>
+        <div class="tags">
+          <span class="tag" data-k="stack"><i></i>Python</span>
+          <span class="tag" data-k="lib"><i></i>Scikit-learn</span>
+          <span class="tag" data-k="lib"><i></i>Seaborn</span>
+          <span class="tag" data-k="method"><i></i>EDA</span>
+          <span class="tag" data-k="ctx"><i></i>Open Data</span>
+        </div>
+        <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/02_Python_Sklearn_Classification.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+      </div>
+      <div class="card-viz">
+        <svg class="viz" data-kind="bars" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 4 · classes (treino)</div>
+      </div>
+    </article>
+
+    <div class="n-note mono reveal">n = 4 · ordem cronológica</div>
+  </div>
+</section>
+
+<!-- ░ SOBRE -->
+<section id="sobre">
+  <div class="sec-title reveal"><span class="lbl mono">§ sobre</span><span class="line"></span></div>
+  <p class="sobre-p reveal">Bacharelando em <strong>Estatística</strong> na UFAM, com interesse em inferência bayesiana, séries temporais e comunicação de dados. Acredito que boas análises são tão importantes quanto boas visualizações.</p>
+  <div class="tech-grid reveal">
+    <div class="tech-col">
+      <div class="tech-lbl mono"><i style="background:var(--red)"></i>linguagens &amp; dados</div>
+      <div class="chips">
+        <span class="chip" style="--c:#e08982">Python</span>
+        <span class="chip" style="--c:#e08982">SQL</span>
+        <span class="chip" style="--c:#e08982">JavaScript</span>
+        <span class="chip" style="--c:#e08982">HTML/CSS</span>
+      </div>
+    </div>
+    <div class="tech-col">
+      <div class="tech-lbl mono"><i style="background:var(--green)"></i>bibliotecas</div>
+      <div class="chips">
+        <span class="chip" style="--c:#6db589">DuckDB</span>
+        <span class="chip" style="--c:#6db589">Pandas</span>
+        <span class="chip" style="--c:#6db589">Statsmodels</span>
+        <span class="chip" style="--c:#6db589">Scikit-learn</span>
+        <span class="chip" style="--c:#6db589">Seaborn</span>
+        <span class="chip" style="--c:#6db589">Chart.js</span>
+      </div>
+    </div>
+    <div class="tech-col">
+      <div class="tech-lbl mono"><i style="background:var(--amber)"></i>métodos</div>
+      <div class="chips">
+        <span class="chip" style="--c:#e2a45a">CEP</span>
+        <span class="chip" style="--c:#e2a45a">STL</span>
+        <span class="chip" style="--c:#e2a45a">Séries Temporais</span>
+        <span class="chip" style="--c:#e2a45a">EDA</span>
+        <span class="chip" style="--c:#e2a45a">Regex</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░ CONTATO -->
+<section id="contato">
+  <div class="sec-title reveal"><span class="lbl mono">§ contato</span><span class="line"></span></div>
+  <div class="contact-grid reveal">
+    <a class="ccard" data-mag href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" target="_blank" rel="noopener noreferrer">
+      <span class="top">linkedin <span class="arr">→</span></span>
+      <span class="sub">hugo-matheus-637bb0350</span>
+    </a>
+    <a class="ccard" data-mag href="mailto:hugo-matheus.rocha@ufam.edu.br">
+      <span class="top">e-mail <span class="arr">→</span></span>
+      <span class="sub">hugo-matheus.rocha@ufam.edu.br</span>
+    </a>
+    <a class="ccard" data-mag href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer">
+      <span class="top">github <span class="arr">→</span></span>
+      <span class="sub">o-hugo/portfolio</span>
+    </a>
+  </div>
+</section>
+
+<!-- ░ FOOTER -->
+<footer>
+  <span>hugo matheus rocha · estatística ufam · 2026</span>
+  <span>p ≪ 0.001 · built with care</span>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var PRM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var COARSE=window.matchMedia('(pointer: coarse)').matches;
+var clamp=function(v,a,b){return v<a?a:(v>b?b:v);};
+var lerp=function(a,b,k){return a+(b-a)*k;};
+
+/* ── vitória-régia: nervuras ── */
+(function(){
+  var g=document.getElementById('veins'); if(!g) return;
+  var SVGNS='http://www.w3.org/2000/svg',N=28,r=118;
+  for(var i=0;i<N;i++){
+    var ang=(i/N)*Math.PI*2-Math.PI/2;
+    var rel=((ang+Math.PI/2)+Math.PI)%(Math.PI*2)-Math.PI;
+    if(Math.abs(rel)<0.12) continue;
+    var ln=document.createElementNS(SVGNS,'line');
+    ln.setAttribute('x1',0);ln.setAttribute('y1',0);
+    ln.setAttribute('x2',(Math.cos(ang)*r*0.86).toFixed(1));
+    ln.setAttribute('y2',(Math.sin(ang)*r*0.86).toFixed(1));
+    ln.setAttribute('stroke','#0a1e12');ln.setAttribute('stroke-width','0.8');ln.setAttribute('opacity','0.6');
+    g.appendChild(ln);
+  }
+})();
+
+/* ── curva normal sob a folha ── */
+(function(){
+  var svg=document.getElementById('bell'); if(!svg) return;
+  var SVGNS='http://www.w3.org/2000/svg',w=200,h=38;
+  var d='M 0 '+(h-4);
+  for(var x=0;x<=w;x+=2){var z=(x-w/2)/(w/6);var y=h-4-(h-12)*Math.exp(-(z*z)/2);d+=' L '+x+' '+y.toFixed(2);}
+  var fill=document.createElementNS(SVGNS,'path');
+  fill.setAttribute('d',d+' L '+w+' '+(h-4)+' Z');fill.setAttribute('fill','#e08982');fill.setAttribute('opacity','0.10');
+  var line=document.createElementNS(SVGNS,'path');
+  line.setAttribute('d',d);line.setAttribute('fill','none');line.setAttribute('stroke','#e08982');line.setAttribute('stroke-width','1.5');
+  var mu=document.createElementNS(SVGNS,'line');
+  mu.setAttribute('x1',w/2);mu.setAttribute('y1',5);mu.setAttribute('x2',w/2);mu.setAttribute('y2',h-4);
+  mu.setAttribute('stroke','#e08982');mu.setAttribute('stroke-dasharray','3 3');mu.setAttribute('opacity','0.5');
+  svg.appendChild(fill);svg.appendChild(line);svg.appendChild(mu);
+  if(!PRM){
+    var L=line.getTotalLength();
+    line.style.strokeDasharray=L;line.style.strokeDashoffset=L;
+    setTimeout(function(){line.style.transition='stroke-dashoffset 1.6s cubic-bezier(.22,.8,.3,1)';line.style.strokeDashoffset='0';},500);
+  }
+})();
+
+/* ── nome: letras emergindo ── */
+(function(){
+  var h1=document.getElementById('heroName'); if(!h1) return;
+  var wrap=document.createElement('span');wrap.setAttribute('aria-hidden','true');
+  var lines=['Hugo Matheus','Rocha'],idx=0;
+  lines.forEach(function(line,li){
+    for(var i=0;i<line.length;i++){
+      var s=document.createElement('span');s.className='h-letter';
+      s.textContent=line[i]===' '?' ':line[i];
+      s.style.setProperty('--d',(0.12+idx*0.04).toFixed(2)+'s');
+      wrap.appendChild(s);idx++;
+    }
+    if(li===0) wrap.appendChild(document.createElement('br'));
+  });
+  var dot=document.createElement('span');dot.className='h-letter dot';dot.textContent='.';
+  dot.style.setProperty('--d',(0.12+idx*0.04).toFixed(2)+'s');wrap.appendChild(dot);
+  h1.appendChild(wrap);
+  setTimeout(function(){document.querySelector('.hero').classList.add('ready');},90);
+})();
+
+/* ════════════════════════════════════════
+   SOLIMÕES + NEGRO · canvas ao fundo do hero
+════════════════════════════════════════ */
+var SOL=(function(){
+  var block=document.getElementById('waterBlock');
+  var cv=document.getElementById('aguas');
+  if(!block||!cv) return null;
+  var ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1,T=Math.random()*50;
+  var px=null,py=null,press=0;
+  var topF=[],botF=[],ripples=[];
+  function now(){return performance.now();}
+
+  function size(){
+    var r=block.getBoundingClientRect();
+    DPR=Math.min(window.devicePixelRatio||1, COARSE?1.25:1.6);
+    W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
+    cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function seed(){
+    topF=[];botF=[];
+    var nt=COARSE?22:40,nb=COARSE?9:16;
+    for(var i=0;i<nt;i++) topF.push({x:Math.random()*W,y:Math.random()*H*0.55,v:46+Math.random()*34,a:0.12+Math.random()*0.2});
+    for(var j=0;j<nb;j++) botF.push({x:Math.random()*W,y:H*0.74+Math.random()*H*0.22,v:14+Math.random()*12,a:0.08+Math.random()*0.12});
+  }
+  size();seed();
+  window.addEventListener('resize',function(){size();seed();if(PRM)draw(0);});
+
+  block.addEventListener('pointermove',function(e){
+    var r=block.getBoundingClientRect();
+    px=e.clientX-r.left;py=e.clientY-r.top;
+  });
+  block.addEventListener('pointerleave',function(){px=null;py=null;});
+  block.addEventListener('pointerdown',function(e){
+    if(PRM) return;
+    var r=block.getBoundingClientRect();
+    ripples.push({x:e.clientX-r.left,y:e.clientY-r.top,r:3,life:1,max:80});
+    ripples.push({x:e.clientX-r.left,y:e.clientY-r.top,r:1,life:1.2,max:54});
+  });
+
+  function rawB(x){
+    return H*0.62
+      +7*Math.sin(x*0.012+T*0.6)
+      +4*Math.sin(x*0.027-T*0.9)
+      +2.5*Math.sin(x*0.05+T*1.7);
+  }
+  function bnd(x){
+    var b=rawB(x);
+    if(press>0.01 && px!==null){
+      var dx=x-px;var g=Math.exp(-dx*dx/12800);
+      var dir=(py<rawB(px))?1:-1;
+      b+=dir*16*g*press;
+    }
+    return b;
+  }
+
+  function draw(dt){
+    T+=dt;
+    var tn=now();
+    press=lerp(press,(px!==null)?1:0,Math.min(1,dt*6));
+    ctx.clearRect(0,0,W,H);
+
+    /* Negro: fundo */
+    var gN=ctx.createLinearGradient(0,0,0,H);
+    gN.addColorStop(0,'#0a1016');gN.addColorStop(1,'#04070b');
+    ctx.fillStyle=gN;ctx.fillRect(0,0,W,H);
+
+    /* fronteira amostrada */
+    var bs=[],x,i;
+    for(x=0;x<=W+8;x+=8) bs.push([x,bnd(x)]);
+
+    /* Solimões: água barrenta acima da fronteira */
+    var gS=ctx.createLinearGradient(0,0,0,H*0.82);
+    gS.addColorStop(0,'#c29c62');gS.addColorStop(0.65,'#9a7644');gS.addColorStop(1,'#6e5430');
+    ctx.fillStyle=gS;
+    ctx.beginPath();ctx.moveTo(0,0);
+    for(i=0;i<bs.length;i++) ctx.lineTo(bs[i][0],bs[i][1]);
+    ctx.lineTo(W,0);ctx.closePath();ctx.fill();
+
+    /* estrias + flocos do Solimões */
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(0,0);
+    for(i=0;i<bs.length;i++) ctx.lineTo(bs[i][0],bs[i][1]);
+    ctx.lineTo(W,0);ctx.closePath();ctx.clip();
+    for(var s=0;s<4;s++){
+      var sy=H*(0.10+s*0.13);
+      ctx.strokeStyle='rgba(240,219,180,'+(0.10+0.04*s)+')';ctx.lineWidth=1;
+      ctx.beginPath();
+      for(x=0;x<=W;x+=10){
+        var yy=sy+3*Math.sin(x*0.02+T*1.6+s*2)+2*Math.sin(x*0.05-T*2.2);
+        if(x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy);
+      }
+      ctx.stroke();
+    }
+    for(i=0;i<topF.length;i++){
+      var f=topF[i];
+      f.x+=f.v*dt;if(f.x>W+8){f.x=-6;f.y=Math.random()*H*0.56;}
+      if(f.y>bnd(f.x)-5) f.y=Math.random()*(bnd(f.x)-14)+4;
+      ctx.fillStyle='rgba(243,225,190,'+f.a+')';
+      ctx.fillRect(f.x,f.y,2+f.v*0.05,1.4);
+    }
+    ctx.restore();
+
+    /* filamentos: as águas se tocam sem se misturar */
+    ctx.lineWidth=1.2;ctx.strokeStyle='rgba(187,148,92,0.4)';
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){var fy=bs[i][1]+5+3*Math.sin(bs[i][0]*0.06+T*2.4);if(i===0)ctx.moveTo(bs[i][0],fy);else ctx.lineTo(bs[i][0],fy);}
+    ctx.stroke();
+    ctx.strokeStyle='rgba(10,18,26,0.55)';
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){var fy2=bs[i][1]-4-3*Math.sin(bs[i][0]*0.045-T*1.8);if(i===0)ctx.moveTo(bs[i][0],fy2);else ctx.lineTo(bs[i][0],fy2);}
+    ctx.stroke();
+
+    /* sombra do Negro logo abaixo da fronteira */
+    ctx.strokeStyle='rgba(0,0,0,0.22)';ctx.lineWidth=9;
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){if(i===0)ctx.moveTo(bs[i][0],bs[i][1]+6);else ctx.lineTo(bs[i][0],bs[i][1]+6);}
+    ctx.stroke();
+
+    /* linha viva da fronteira */
+    ctx.strokeStyle='rgba(236,231,218,0.30)';ctx.lineWidth=1;
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){if(i===0)ctx.moveTo(bs[i][0],bs[i][1]);else ctx.lineTo(bs[i][0],bs[i][1]);}
+    ctx.stroke();
+
+    /* flocos do Negro */
+    for(i=0;i<botF.length;i++){
+      var b=botF[i];
+      b.x+=b.v*dt;if(b.x>W+8){b.x=-6;b.y=H*0.7+Math.random()*H*0.26;}
+      if(b.y<bnd(b.x)+6) b.y=bnd(b.x)+8+Math.random()*(H-bnd(b.x)-14);
+      ctx.fillStyle='rgba(140,172,196,'+b.a+')';
+      ctx.fillRect(b.x,b.y,1.8+b.v*0.04,1.3);
+    }
+
+    /* ondulações de toque */
+    for(var rp=ripples.length-1;rp>=0;rp--){
+      var R=ripples[rp];
+      R.r+=80*dt;R.life-=dt*0.9;
+      if(R.life<=0||R.r>R.max+30){ripples.splice(rp,1);continue;}
+      var ra=Math.max(0,R.life)*0.5;
+      ctx.strokeStyle='rgba(214,226,238,'+ra.toFixed(3)+')';ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.ellipse(R.x,R.y,R.r,R.r*0.42,0,0,6.2832);ctx.stroke();
+    }
+
+    /* paralaxe leve da folha grande */
+    if(heroLily && !PRM){
+      var tx=(px!==null)?(px/W-0.5)*16:0;
+      lilyPX=lerp(lilyPX,tx,0.06);
+      heroLily.style.setProperty('--plx',lilyPX.toFixed(1)+'px');
+    }
+  }
+  var heroLily=document.getElementById('heroLily');
+  var lilyPX=0;
+  return {tick:function(dt){draw(dt);},drawStatic:function(){draw(0);}};
+})();
+
+/* ── laço de animação ── */
+(function(){
+  if(!SOL) return;
+  if(PRM){ SOL.drawStatic(); return; }
+  var active=true;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){active=e.isIntersecting;});},{threshold:0});
+  var wb=document.getElementById('waterBlock'); if(wb) io.observe(wb);
+  var last=performance.now(),raf=0;
+  function frame(t){
+    var dt=Math.min((t-last)/1000,0.05);last=t;
+    if(active) SOL.tick(dt);
+    raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){cancelAnimationFrame(raf);}
+    else{last=performance.now();raf=requestAnimationFrame(frame);}
+  });
+})();
+
+/* ════════════════════════════════════════
+   VIZUALIZAÇÕES dos projetos
+════════════════════════════════════════ */
+var SVGNS='http://www.w3.org/2000/svg';
+function E(tag,attrs,parent){var n=document.createElementNS(SVGNS,tag);for(var k in attrs)n.setAttribute(k,attrs[k]);if(parent)parent.appendChild(n);return n;}
+function monoText(svg,x,y,str,fill,size,anchor){var t=E('text',{x:x,y:y,'font-size':size||7,'font-family':'JetBrains Mono, monospace',fill:fill,'text-anchor':anchor||'start','letter-spacing':'0.5'},svg);t.textContent=str;return t;}
+
+function buildIMR(svg){
+  var UCL=22,CL=50,LCL=78;
+  E('line',{x1:4,y1:UCL,x2:182,y2:UCL,stroke:'#5a636c','stroke-dasharray':'3 3',opacity:0.9},svg);
+  E('line',{x1:4,y1:CL,x2:196,y2:CL,stroke:'#3a434c'},svg);
+  E('line',{x1:4,y1:LCL,x2:196,y2:LCL,stroke:'#5a636c','stroke-dasharray':'3 3',opacity:0.9},svg);
+  monoText(svg,196,UCL-3,'UCL','#5a636c',7,'end');
+  monoText(svg,196,LCL+9,'LCL','#5a636c',7,'end');
+  var ys=[56,48,58,44,52,40,50,46,12,42,54,46,50],d='';
+  for(var i=0;i<ys.length;i++){var x=10+i*15;d+=(i===0?'M':' L')+' '+x+' '+ys[i];}
+  E('path',{d:d,fill:'none',stroke:'#e08982','stroke-width':1.6,'class':'draw','stroke-linejoin':'round'},svg);
+  for(i=0;i<ys.length;i++){
+    var cx=10+i*15,out=(i===8);
+    if(out) E('circle',{cx:cx,cy:ys[i],r:4,fill:'none',stroke:'#ff5d4f','stroke-width':1.2,'class':'halo'},svg);
+    var c=E('circle',{cx:cx,cy:ys[i],r:out?3.2:2.4,fill:out?'#ff5d4f':'#ece7da','class':'pt'},svg);
+    c.style.setProperty('--d',(0.25+i*0.09).toFixed(2)+'s');
+  }
+}
+function buildFlow(svg){
+  var boxes=[{x:6,c:'#e2a45a',lbl:'XLSX',d:'0s'},{x:72,c:'#e08982',lbl:'ETL',d:'0.85s'},{x:138,c:'#6db589',lbl:'DB',d:'1.7s'}];
+  for(var i=0;i<boxes.length;i++){
+    var b=boxes[i];var g=E('g',{'class':'fbox'},svg);g.style.color=b.c;g.style.setProperty('--d',b.d);
+    E('rect',{x:b.x,y:30,width:52,height:26,rx:3,fill:'none',stroke:b.c,'stroke-width':1.3},g);
+    monoText(g,b.x+26,47,b.lbl,b.c,8.5,'middle');
+    if(i<2){
+      E('line',{x1:b.x+52,y1:43,x2:b.x+66,y2:43,stroke:'#5a636c','stroke-width':1.2},svg);
+      E('polygon',{points:(b.x+66)+',40 '+(b.x+70)+',43 '+(b.x+66)+',46',fill:'#5a636c'},svg);
+    }
+  }
+  for(var j=0;j<4;j++){var dot=E('circle',{cx:16,cy:43,r:2.4,fill:'#f0dcb2','class':'fdot'},svg);dot.style.setProperty('--d',(j*0.75).toFixed(2)+'s');}
+  var note=monoText(svg,100,80,'50+ planilhas · 1 banco analítico','#5a636c',7,'middle');
+  note.setAttribute('class','late');note.style.setProperty('--d','1.4s');
+}
+function buildCUSUM(svg){
+  E('line',{x1:4,y1:80,x2:196,y2:80,stroke:'#3a434c'},svg);
+  E('line',{x1:4,y1:26,x2:196,y2:26,stroke:'#e2a45a','stroke-dasharray':'4 3',opacity:0.9},svg);
+  monoText(svg,194,21,'h = 4,17','#e2a45a',7,'end');
+  monoText(svg,6,76,'C⁺ₜ','#5a636c',7,'start');
+  var d='',y=80,cross=null;
+  for(var x=6;x<=196;x+=4){
+    if(x<104){y=80-(Math.sin(x*0.11)*3+Math.sin(x*0.05)*2);}else{y-=3.4+Math.sin(x*0.3)*0.8;}
+    y=Math.max(12,y);d+=(x===6?'M':' L')+' '+x+' '+y.toFixed(1);
+    if(!cross && y<=26) cross=[x,y];
+  }
+  E('path',{d:d,fill:'none',stroke:'#e08982','stroke-width':1.6,'class':'draw','stroke-linejoin':'round'},svg);
+  if(cross){
+    E('circle',{cx:cross[0],cy:cross[1],r:4.5,fill:'none',stroke:'#ff5d4f','stroke-width':1.2,'class':'halo'},svg);
+    var c=E('circle',{cx:cross[0],cy:cross[1],r:3,fill:'#ff5d4f','class':'pt'},svg);c.style.setProperty('--d','1.35s');
+    var al=monoText(svg,cross[0]-8,cross[1]+3,'alarme','#ff5d4f',7.5,'end');al.setAttribute('class','late');al.style.setProperty('--d','1.7s');
+  }
+}
+function buildBars(svg){
+  E('line',{x1:4,y1:84,x2:196,y2:84,stroke:'#3a434c'},svg);
+  var hs=[38,22,12,8,6,14,28,34,42,30,18,10];
+  for(var i=0;i<hs.length;i++){
+    var r=E('rect',{x:8+i*15,y:84-hs[i],width:10,height:hs[i],fill:(i===8)?'#e08982':'rgba(236,231,218,0.28)','class':'bar'},svg);
+    r.style.setProperty('--d',(0.1+i*0.06).toFixed(2)+'s');
+  }
+  var mk=monoText(svg,8+8*15+5,84-42-5,'↑','#e08982',9,'middle');mk.setAttribute('class','late');mk.style.setProperty('--d','1.1s');
+}
+
+(function(){
+  document.querySelectorAll('.viz').forEach(function(svg){
+    var kind=svg.getAttribute('data-kind');
+    if(kind==='imr')buildIMR(svg);else if(kind==='flow')buildFlow(svg);else if(kind==='cusum')buildCUSUM(svg);else if(kind==='bars')buildBars(svg);
+    svg.__lastPlay=0;
+    svg.__play=function(){
+      var t=performance.now();if(t-svg.__lastPlay<1400)return;svg.__lastPlay=t;
+      svg.classList.add('noanim');svg.classList.remove('play');
+      var draws=svg.querySelectorAll('.draw');
+      draws.forEach(function(p){var L=p.getTotalLength();p.style.transition='none';p.style.strokeDasharray=L;p.style.strokeDashoffset=L;});
+      void svg.getBoundingClientRect();svg.classList.remove('noanim');
+      requestAnimationFrame(function(){
+        draws.forEach(function(p){p.style.transition='stroke-dashoffset 1.6s cubic-bezier(.22,.8,.3,1)';p.style.strokeDashoffset='0';});
+        svg.classList.add('play');
+      });
+    };
+  });
+})();
+
+/* ── revelar ao rolar ── */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(PRM){els.forEach(function(e){e.classList.add('in');var v=e.querySelector('.viz');if(v)v.classList.add('play');});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting)return;
+      en.target.classList.add('in');
+      var v=en.target.querySelector('.viz');
+      if(v) setTimeout(function(){v.__play();},350);
+      io.unobserve(en.target);
+    });
+  },{threshold:0.18,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e);});
+})();
+
+/* ── inclinação 3D dos cartões ── */
+(function(){
+  if(COARSE||PRM)return;
+  document.querySelectorAll('[data-tilt]').forEach(function(card){
+    card.addEventListener('pointermove',function(e){
+      var r=card.getBoundingClientRect();
+      var nx=(e.clientX-r.left)/r.width-0.5,ny=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform='rotateX('+(-ny*2.6).toFixed(2)+'deg) rotateY('+(nx*3.4).toFixed(2)+'deg)';
+    });
+    card.addEventListener('pointerleave',function(){card.style.transform='';});
+  });
+})();
+
+/* ── cartões de contato magnéticos ── */
+(function(){
+  if(COARSE||PRM)return;
+  document.querySelectorAll('[data-mag]').forEach(function(el){
+    el.addEventListener('pointermove',function(e){
+      var r=el.getBoundingClientRect();
+      var nx=(e.clientX-r.left)/r.width-0.5,ny=(e.clientY-r.top)/r.height-0.5;
+      el.style.transform='translate('+(nx*10).toFixed(1)+'px,'+(ny*6).toFixed(1)+'px)';
+    });
+    el.addEventListener('pointerleave',function(){el.style.transform='';});
+  });
+})();
+
+})();
 </script>
-
 </body>
 </html>
