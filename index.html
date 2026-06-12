@@ -3,38 +3,1520 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#14171c">
-<title>Hugo Matheus Rocha — Portfolio</title>
+<meta name="theme-color" content="#04070b">
+<title>Hugo Matheus Rocha · Portfolio · Rio Negro</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
 <style>
-  html, body { margin: 0; padding: 0; min-height: 100%; background: #14171c; }
-  body { font-family: 'Manrope', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  /* Evita scroll horizontal acidental em telas estreitas */
-  html, body { overflow-x: hidden; }
-  /* Toques mais confortáveis em mobile */
-  a { -webkit-tap-highlight-color: transparent; }
+/* ───────────────────────────────────────────────
+   NOITE SOBRE O NEGRO · design tokens
+   água profunda, luar, urucum, mata, ocre
+─────────────────────────────────────────────── */
+:root{
+  --agua-0:#04070b;          /* leito do rio, fundo da página */
+  --agua-1:#0a1118;          /* painéis */
+  --agua-2:#10181f;          /* superfícies elevadas */
+  --luar:#ece7da;            /* tinta principal */
+  --soft:#a0a8ae;
+  --faint:#5a636c;
+  --urucum:#e08982;          /* acento quente */
+  --urucum-forte:#c4554b;
+  --mata:#6db589;
+  --ocre:#e2a45a;
+  --solimoes:#c29a62;        /* água barrenta do Solimões */
+  --rule:rgba(236,231,218,0.10);
+  --grid:rgba(236,231,218,0.035);
+  --wrap:880px;
+  --ease-out:cubic-bezier(.22,.8,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0;min-height:100%;overflow-x:hidden}
+body{
+  background:var(--agua-0);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:48px 48px;
+  color:var(--luar);
+  font-family:'Manrope',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{-webkit-tap-highlight-color:transparent;color:inherit}
+::selection{background:rgba(224,137,130,.32);color:#fff}
+:focus-visible{outline:2px solid var(--urucum);outline-offset:3px;border-radius:2px}
+
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{width:min(var(--wrap),100% - 48px);margin-inline:auto}
+@media (max-width:640px){ .wrap{width:calc(100% - 40px)} }
+
+/* ───────────────────────────────────────────────
+   NAV · vidro sobre a água
+─────────────────────────────────────────────── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(4,7,11,0.72);
+  border-bottom:1px solid var(--rule);
+}
+.nav-in{
+  width:min(var(--wrap),100% - 48px);margin-inline:auto;
+  height:56px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:17px;
+  letter-spacing:-0.01em;color:var(--luar);
+}
+.brand svg{display:block}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-link{
+  position:relative;text-decoration:none;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  letter-spacing:.12em;text-transform:lowercase;color:var(--soft);
+  padding:6px 0;transition:color .25s;
+}
+.nav-link:hover{color:var(--urucum)}
+/* sublinhado ondulado, água corrente */
+.u-wave{
+  position:absolute;left:0;bottom:0;height:6px;width:100%;
+  overflow:hidden;pointer-events:none;
+  clip-path:inset(0 100% 0 0);
+  transition:clip-path .35s var(--ease-out);
+}
+.nav-link:hover .u-wave,
+.nav-link:focus-visible .u-wave{clip-path:inset(0 0 0 0)}
+.u-wave svg{
+  display:block;width:200%;height:6px;
+  animation:waveSlide 1.1s linear infinite;
+}
+@keyframes waveSlide{to{transform:translateX(-50%)}}
+.gh-link{color:var(--faint);display:inline-flex;padding:6px 0;transition:color .25s}
+.gh-link:hover{color:var(--urucum)}
+@media (max-width:640px){ .nav-links{gap:16px} .nav-link{font-size:11px;letter-spacing:.08em} }
+
+/* ───────────────────────────────────────────────
+   HERO · a superfície do rio
+─────────────────────────────────────────────── */
+.hero{
+  position:relative;min-height:clamp(360px,56svh,520px);
+  display:flex;flex-direction:column;justify-content:flex-start;
+  overflow:hidden;
+  background:radial-gradient(ellipse 120% 90% at 30% 20%, #0d161f 0%, #070d13 45%, #04070b 100%);
+}
+#rio{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, transparent 55%, rgba(2,4,7,.55) 100%),
+    linear-gradient(to bottom, rgba(4,7,11,.5) 0%, transparent 18%, transparent 78%, var(--agua-0) 100%);
+}
+.hero-coords{
+  position:absolute;top:66px;right:24px;z-index:3;
+  font-size:9.5px;letter-spacing:.16em;color:rgba(236,231,218,.34);white-space:nowrap;
+}
+.hero-stage{
+  position:relative;z-index:2;
+  width:min(var(--wrap),100% - 48px);margin-inline:auto;
+  display:flex;align-items:center;gap:clamp(20px,4vw,44px);
+  padding-block:64px 40px;
+}
+.hero-lily{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:lilyFloat 9s ease-in-out infinite;
+  will-change:transform;
+}
+.hero-lily svg#vitoria{width:clamp(150px,20vw,210px);height:auto}
+@keyframes lilyFloat{
+  0%,100%{transform:translate3d(var(--plx,0px),0,0) rotate(0deg)}
+  50%{transform:translate3d(var(--plx,0px),-9px,0) rotate(.7deg)}
+}
+.fig-cap{font-size:9.5px;letter-spacing:.08em;color:rgba(236,231,218,.4);white-space:nowrap}
+
+.hero-text{animation:textFloat 7s ease-in-out infinite}
+@keyframes textFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.kicker{
+  font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--urucum);margin-bottom:12px;
+}
+.h-name{
+  margin:0;font-weight:800;
+  font-size:clamp(30px,5.2vw,48px);
+  line-height:.96;letter-spacing:-0.035em;color:#f3f0e7;
+  text-shadow:0 8px 32px rgba(0,0,0,.7);
+}
+.h-name .dot{color:var(--urucum)}
+.h-letter{
+  display:inline-block;opacity:0;
+  transform:translateY(.55em);filter:blur(8px);
+  transition:opacity .8s var(--ease-out),transform .8s var(--ease-out),filter .8s var(--ease-out);
+  transition-delay:var(--d,0s);
+}
+.hero.ready .h-letter{opacity:1;transform:translateY(0);filter:blur(0)}
+/* reflexo na água parada */
+.mirror-wrap{
+  height:.7em;margin-top:3px;overflow:hidden;pointer-events:none;
+  font-size:clamp(30px,5.2vw,48px);line-height:.96;
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 88%);
+          mask-image:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 88%);
+  opacity:0;transition:opacity 1.4s ease .9s;
+}
+.hero.ready .mirror-wrap{opacity:1}
+.mirror{
+  display:inline-block;font-weight:800;letter-spacing:-0.035em;color:#9fb4c2;
+  transform:scaleY(-1);filter:blur(2.5px);
+  animation:mirrorSway 6.5s ease-in-out infinite;
+}
+@keyframes mirrorSway{
+  0%,100%{transform:scaleY(-1) skewX(0deg) translateX(0)}
+  50%{transform:scaleY(-1) skewX(1.6deg) translateX(3px)}
+}
+.h-tag{
+  font-size:clamp(13px,1.5vw,14.5px);color:rgba(236,231,218,.78);
+  max-width:430px;line-height:1.55;margin:12px 0 12px;
+}
+.h-bayes{font-size:clamp(10px,1.3vw,11.5px);letter-spacing:.08em;color:rgba(236,231,218,.42)}
+
+.scroll-hint{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
+  font-size:10px;letter-spacing:.2em;color:var(--faint);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:bob 2.6s ease-in-out infinite;text-transform:lowercase;
+}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
+@media (max-width:899px){ .scroll-hint{display:none} }
+
+/* anel de contato do cursor com a água */
+.touch-ring{
+  position:absolute;z-index:2;width:30px;height:15px;
+  border:1px solid rgba(176,202,222,.55);border-radius:50%;
+  pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%);
+  transition:opacity .4s;
+  mix-blend-mode:screen;
+}
+.touch-ring.on{opacity:1}
+.touch-ring.tap{animation:tap .5s ease-out}
+@keyframes tap{0%{scale:1;opacity:1}100%{scale:2.1;opacity:0}}
+
+@media (max-width:899px){
+  .hero{min-height:auto}
+  .hero-stage{flex-direction:column;text-align:center;padding-block:58px 44px;gap:14px}
+  .hero-text{display:flex;flex-direction:column;align-items:center}
+  .hero-lily svg#vitoria{width:clamp(118px,34vw,168px)}
+  .hero-coords{top:62px;right:14px;font-size:8.5px}
+  .h-tag{margin:10px 0 10px}
+}
+@media (max-width:480px){
+  .hero-stage{padding-block:52px 40px}
+  .hero-lily{gap:6px}
+  .fig-cap{font-size:8.5px}
+}
+@media (pointer:coarse){ .touch-ring{display:none} }
+
+/* ───────────────────────────────────────────────
+   ENCONTRO DAS ÁGUAS · divisor vivo
+─────────────────────────────────────────────── */
+.encontro{
+  position:relative;
+  width:100vw;margin-inline:calc(50% - 50vw);
+  height:clamp(156px,24vh,236px);
+  border-top:1px solid rgba(194,154,98,.18);
+  border-bottom:1px solid var(--rule);
+  overflow:hidden;
+}
+#aguas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.encontro-cap{
+  position:absolute;left:50%;bottom:10px;transform:translateX(-50%);
+  width:min(var(--wrap),100% - 48px);
+  font-size:9.5px;letter-spacing:.12em;color:rgba(236,231,218,.45);
+  text-align:right;pointer-events:none;
+}
+
+/* ───────────────────────────────────────────────
+   SEÇÕES · margens do rio
+─────────────────────────────────────────────── */
+section{padding-block:72px 0}
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.sec-title .lbl{
+  font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--urucum);
+}
+.sec-title .line{flex:1;height:1px;background:var(--rule)}
+
+.intro{padding-block:56px 0}
+.intro-grid{display:flex;gap:44px;align-items:flex-start}
+.intro p{flex:1;margin:0;font-size:15.5px;line-height:1.74;color:var(--soft)}
+.intro p strong{color:var(--luar);font-weight:600}
+.quick{flex-shrink:0;display:flex;flex-direction:column;gap:2px;min-width:148px}
+.quick a{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--urucum);
+  text-decoration:none;padding:7px 0;border-bottom:1px dotted var(--rule);
+  transition:letter-spacing .25s,color .25s;
+}
+.quick a:hover{letter-spacing:.06em;color:#f0a8a1}
+.quick .arr{opacity:.6;transition:transform .25s}
+.quick a:hover .arr{transform:translate(2px,-2px)}
+@media (max-width:720px){ .intro-grid{flex-direction:column;gap:24px} .quick{width:100%} }
+
+/* ───────────────────────────────────────────────
+   PROJETOS · cartas na correnteza
+─────────────────────────────────────────────── */
+.cards{perspective:1400px;border-left:1px solid var(--rule);padding-left:32px;margin-left:8px}
+@media (max-width:720px){ .cards{border-left:none;padding-left:0;margin-left:0} }
+
+.card{
+  position:relative;
+  display:grid;grid-template-columns:1fr 212px;gap:32px;
+  padding:30px 18px 30px 14px;margin-left:-14px;
+  border-bottom:1px solid var(--rule);
+  border-radius:10px;
+  transition:transform .55s var(--ease-out),background .35s,border-color .35s;
+  transform-style:preserve-3d;will-change:transform;
+}
+.card:hover{background:rgba(16,24,31,.55)}
+.card-stripe{
+  position:absolute;left:-33px;top:14px;bottom:14px;width:2px;border-radius:2px;
+  background:var(--urucum);transform:scaleY(0);transform-origin:top;
+  transition:transform .45s var(--ease-out);
+}
+.card:hover .card-stripe{transform:scaleY(1)}
+.sheen{
+  position:absolute;inset:0;border-radius:inherit;opacity:0;pointer-events:none;
+  background:radial-gradient(260px 180px at var(--mx,50%) var(--my,50%), rgba(168,198,220,.10), transparent 62%);
+  transition:opacity .35s;
+}
+.card:hover .sheen{opacity:1}
+
+.card-meta{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.pid{font-size:10.5px;color:var(--urucum);letter-spacing:.06em}
+.musig{font-size:10px;color:var(--faint)}
+.pdate{font-size:10px;color:var(--faint);margin-left:auto}
+.card-title{
+  margin:0 0 10px;font-size:clamp(18px,2.4vw,21px);font-weight:600;
+  letter-spacing:-0.015em;line-height:1.22;color:var(--luar);
+  transition:color .3s;
+}
+.card:hover .card-title{color:var(--urucum)}
+.card-text{margin:0 0 14px;font-size:13.5px;line-height:1.66;color:var(--soft)}
+
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  padding:3px 9px 3px 7px;color:var(--soft);
+  background:rgba(236,231,218,.04);border:1px solid var(--rule);border-radius:3px;
+  transition:transform .25s,border-color .25s,background .25s;
+}
+.card:hover .tag{transform:translateY(-1px)}
+.tag i{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tag[data-k="stack"] i{background:var(--urucum)}
+.tag[data-k="lib"] i{background:var(--mata)}
+.tag[data-k="method"] i{background:var(--ocre)}
+.tag[data-k="ctx"] i{background:var(--faint)}
+
+.plink{
+  display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+  font-size:11.5px;font-weight:600;letter-spacing:.04em;color:var(--urucum);
+}
+.plink .lab{border-bottom:1.5px solid var(--urucum);padding-bottom:1px}
+.plink .arr{transition:transform .3s var(--ease-out)}
+.plink:hover .arr{transform:translateX(5px)}
+
+.card-viz{
+  border-left:1px dashed var(--rule);padding-left:20px;
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+}
+.viz{width:100%;height:auto;display:block;overflow:visible}
+.figcap{font-size:9.5px;letter-spacing:.06em;color:var(--faint)}
+@media (max-width:720px){
+  .card{grid-template-columns:1fr;gap:14px;padding-inline:8px}
+  .card-viz{border-left:none;border-top:1px dashed var(--rule);padding:14px 0 0}
+}
+
+.n-note{padding-top:18px;font-size:10px;color:var(--faint)}
+
+/* animações das vizualizações */
+.viz .draw{transition:stroke-dashoffset 1.6s var(--ease-out)}
+.viz .pt{
+  transform:scale(0);transform-box:fill-box;transform-origin:center;
+  transition:transform .45s var(--ease-out);transition-delay:var(--d,0s);
+}
+.viz.play .pt{transform:scale(1)}
+.viz .halo{
+  transform-box:fill-box;transform-origin:center;opacity:0;
+}
+.viz.play .halo{animation:halo 1.7s ease-out infinite;animation-delay:1.5s}
+@keyframes halo{0%{transform:scale(.4);opacity:.85}100%{transform:scale(3.2);opacity:0}}
+.viz .bar{
+  transform:scaleY(0);transform-box:fill-box;transform-origin:bottom;
+  transition:transform .6s var(--ease-out);transition-delay:var(--d,0s);
+}
+.viz.play .bar{transform:scaleY(1)}
+.viz .fdot{opacity:0}
+.viz.play .fdot{animation:flowDot 3s linear infinite;animation-delay:var(--d,0s)}
+@keyframes flowDot{
+  0%{transform:translateX(0);opacity:0}
+  6%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateX(168px);opacity:0}
+}
+.viz .fbox{transform-box:fill-box;transform-origin:center}
+.viz.play .fbox{animation:boxGlow 3s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes boxGlow{
+  0%,100%{filter:none}
+  14%{filter:drop-shadow(0 0 5px currentColor)}
+  28%{filter:none}
+}
+.viz .late{opacity:0;transition:opacity .6s ease;transition-delay:var(--d,1.6s)}
+.viz.play .late{opacity:1}
+
+/* ───────────────────────────────────────────────
+   SOBRE · tecnologias
+─────────────────────────────────────────────── */
+.sobre-p{margin:0 0 34px;max-width:620px;font-size:15px;line-height:1.74;color:var(--soft)}
+.sobre-p strong{color:var(--luar);font-weight:600}
+.tech-grid{display:flex;gap:26px;flex-wrap:wrap}
+.tech-col{flex:1;min-width:200px}
+.tech-lbl{
+  display:flex;align-items:center;gap:7px;margin-bottom:10px;
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+}
+.tech-lbl i{width:5px;height:5px;border-radius:50%}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  position:relative;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  padding:4px 11px;border-radius:999px;cursor:default;
+  border:1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  color:var(--c);background:color-mix(in srgb, var(--c) 9%, transparent);
+  transition:transform .25s var(--ease-out),background .25s,box-shadow .25s;
+}
+.chip:hover{
+  transform:translateY(-2px);
+  background:color-mix(in srgb, var(--c) 20%, transparent);
+  box-shadow:0 4px 16px -6px color-mix(in srgb, var(--c) 50%, transparent);
+}
+
+/* ───────────────────────────────────────────────
+   CONTATO · cartas magnéticas
+─────────────────────────────────────────────── */
+.contact-grid{display:flex;gap:20px}
+.ccard{
+  flex:1;display:flex;flex-direction:column;gap:5px;text-decoration:none;
+  padding:18px 20px;border-radius:10px;
+  background:var(--agua-1);border:1px solid var(--rule);
+  transition:transform .35s var(--ease-out),border-color .3s,background .3s;
+  will-change:transform;
+}
+.ccard:hover{border-color:var(--urucum);background:var(--agua-2)}
+.ccard .top{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+  color:var(--urucum);text-transform:lowercase;display:flex;gap:8px;align-items:center;
+}
+.ccard .top .arr{transition:transform .3s}
+.ccard:hover .top .arr{transform:translate(3px,-1px)}
+.ccard .sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);word-break:break-all}
+@media (max-width:720px){ .contact-grid{flex-direction:column} }
+
+/* ───────────────────────────────────────────────
+   FOOTER
+─────────────────────────────────────────────── */
+footer{
+  margin-top:80px;border-top:1px solid var(--rule);
+  padding-block:44px 40px;
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint);
+}
+@media (max-width:640px){ footer{font-size:9.5px} }
+
+/* ───────────────────────────────────────────────
+   RÉGUA DO PORTO · progresso de leitura como cota do rio
+─────────────────────────────────────────────── */
+.gauge{
+  position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:90;
+  display:flex;align-items:stretch;gap:8px;
+  font-family:'JetBrains Mono',monospace;color:var(--faint);
+  pointer-events:none;
+}
+.gauge-track{
+  position:relative;width:3px;height:236px;border-radius:2px;
+  background:rgba(236,231,218,.10);overflow:visible;
+}
+.gauge-fill{
+  position:absolute;left:0;bottom:0;width:100%;border-radius:2px;
+  background:linear-gradient(to top, #2d4f6e, var(--urucum));
+  height:100%;transform:scaleY(0);transform-origin:bottom;
+  transition:transform .15s linear;
+}
+.gauge-tick{position:absolute;left:6px;font-size:8.5px;letter-spacing:.06em;transform:translateY(50%);white-space:nowrap}
+.gauge-meta{
+  position:absolute;right:14px;top:-34px;text-align:right;font-size:9px;letter-spacing:.08em;
+  color:var(--soft);white-space:nowrap;
+}
+.gauge-meta .v{color:var(--urucum);font-weight:600}
+.gauge-min{position:absolute;right:14px;bottom:-16px;font-size:7.5px;letter-spacing:.05em;white-space:nowrap;text-align:right}
+@media (max-width:1180px){ .gauge{display:none} }
+
+/* ───────────────────────────────────────────────
+   REVEAL ao rolar
+─────────────────────────────────────────────── */
+.reveal{
+  opacity:0;transform:translateY(26px);
+  transition:opacity .8s ease,transform .8s var(--ease-out);
+  transition-delay:var(--rd,0s);
+}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ───────────────────────────────────────────────
+   MOVIMENTO REDUZIDO
+─────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .reveal{opacity:1;transform:none}
+  .h-letter{opacity:1;transform:none;filter:none}
+  .mirror-wrap{opacity:1}
+}
 </style>
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
-
 <body>
 
-<div id="root"></div>
+<!-- ░ NAV -->
+<nav class="nav" aria-label="navegação principal">
+  <div class="nav-in">
+    <a class="brand" href="#topo" aria-label="início">
+      <svg width="26" height="26" viewBox="-13 -13 26 26" aria-hidden="true">
+        <circle r="12" fill="#162e1f"/>
+        <circle r="9" fill="#26442f"/>
+        <circle r="6" fill="none" stroke="#0d2719" stroke-width="0.8"/>
+        <path d="M -1 -12 L 0 -2 L 1 -12 Z" fill="#06090d"/>
+      </svg>
+      <span>Hugo Matheus</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#projetos">projetos
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="nav-link" href="#sobre">sobre
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="nav-link" href="#contato">contato
+        <span class="u-wave" aria-hidden="true"><svg viewBox="0 0 80 6" preserveAspectRatio="none"><path d="M0 3 Q 5 0 10 3 T 20 3 T 30 3 T 40 3 T 50 3 T 60 3 T 70 3 T 80 3" fill="none" stroke="#e08982" stroke-width="1.3"/></svg></span>
+      </a>
+      <a class="gh-link" href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
 
-<script type="text/babel" src="app.jsx"></script>
+<!-- ░ HERO · superfície do Rio Negro -->
+<header class="hero" id="topo">
+  <canvas id="rio" aria-hidden="true"></canvas>
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <div class="touch-ring" id="touchRing" aria-hidden="true"></div>
+  <div class="hero-coords mono">manaus · −3.10°, −60.02° · rio negro</div>
 
-<script type="text/babel">
-  ReactDOM.createRoot(document.getElementById('root')).render(
-    <DistribuicaoVariant paletteId="noite"/>
-  );
+  <div class="hero-stage">
+    <div class="hero-lily" id="heroLily">
+      <svg id="vitoria" width="240" height="240" viewBox="-120 -120 240 240" style="overflow:visible" role="img" aria-label="Vitória-régia com monograma HM">
+        <defs>
+          <radialGradient id="leafGrad" cx="38%" cy="30%">
+            <stop offset="0%" stop-color="#456a52"/>
+            <stop offset="55%" stop-color="#264a34"/>
+            <stop offset="100%" stop-color="#13301f"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="0" cy="26" rx="122" ry="19" fill="rgba(0,0,0,0.55)" style="filter:blur(10px)"/>
+        <circle r="118" fill="#0e2418"/>
+        <circle r="113" fill="url(#leafGrad)"/>
+        <g id="veins"></g>
+        <circle r="106" fill="none" stroke="#0d2719" stroke-width="1.5" opacity="0.65"/>
+        <circle r="96" fill="none" stroke="#0d2719" stroke-width="0.7" opacity="0.4"/>
+        <path d="M -3 -117 L 0 -4 L 3 -117 Q 0 -119 -3 -117 Z" fill="#06090d"/>
+        <ellipse cx="-26" cy="-34" rx="66" ry="34" fill="rgba(210,225,190,0.08)"/>
+        <circle cx="70" cy="62" r="6.5" fill="#f0ede4" opacity="0.7"/>
+        <circle cx="70" cy="62" r="3" fill="#e2a45a" opacity="0.9"/>
+        <text x="0" y="6" text-anchor="middle" dominant-baseline="central"
+              font-family="'Newsreader',Georgia,serif" font-size="82" font-style="italic" font-weight="500"
+              fill="#f1eee5" letter-spacing="-2" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,0.55))">HM</text>
+      </svg>
+      <svg id="bell" width="100%" height="44" viewBox="0 0 220 44" style="max-width:230px" aria-hidden="true"></svg>
+      <div class="fig-cap mono">fig. 0 · N(μ, σ²)</div>
+    </div>
+
+    <div class="hero-text">
+      <div class="kicker mono">▌ bacharelando · estatística · ufam</div>
+      <h1 class="h-name" id="heroName" aria-label="Hugo Matheus Rocha"></h1>
+      <div class="mirror-wrap" aria-hidden="true"><span class="mirror" id="mirrorName"></span></div>
+      <p class="h-tag">Estatístico em formação. Transformo ruído em sinal com pipelines reprodutíveis, controle de processo e séries temporais.</p>
+      <div class="h-bayes mono">P(A|B) = P(B|A)·P(A) / P(B)</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint mono"><span>siga a correnteza</span><span>↓</span></div>
+</header>
+
+<!-- ░ ENCONTRO DAS ÁGUAS -->
+<div class="encontro" id="encontro" role="img" aria-label="Encontro das águas: o Rio Solimões e o Rio Negro correndo lado a lado sem se misturar">
+  <canvas id="aguas"></canvas>
+  <div class="encontro-cap mono">encontro das águas · solimões (claro) + negro · correm lado a lado sem se misturar · passe o cursor</div>
+</div>
+
+<!-- ░ INTRO editorial -->
+<div class="intro">
+  <div class="wrap intro-grid reveal">
+    <p>Bacharelando em <strong>Estatística</strong> na UFAM, focado em transformar dados brutos em insights acionáveis para decisões baseadas em evidência. Uno rigor estatístico ao desenvolvimento de pipelines ETL e BI, priorizando clareza técnica e segurança da informação.</p>
+    <div class="quick">
+      <a href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><span class="arr">↗</span></a>
+      <a href="mailto:hugo-matheus.rocha@ufam.edu.br"><span>E-mail</span><span class="arr">↗</span></a>
+      <a href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span class="arr">↗</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- ░ PROJETOS -->
+<section id="projetos">
+  <div class="wrap">
+    <div class="sec-title reveal"><span class="lbl mono">§ projetos selecionados</span><span class="line"></span></div>
+
+    <div class="cards">
+
+      <article class="card reveal" data-tilt style="--rd:.05s">
+        <div class="card-stripe"></div><div class="sheen"></div>
+        <div class="card-body">
+          <div class="card-meta mono">
+            <span class="pid">p01</span><span class="musig">μ = 0.92 · σ = 0.04</span><span class="pdate">2026</span>
+          </div>
+          <h3 class="card-title">Monitoramento de Produtividade Pública</h3>
+          <p class="card-text">Dashboard interativo aplicando Controle Estatístico de Processo (CEP) para detecção de anomalias e decomposição STL para análise de tendências em métricas processuais.</p>
+          <div class="tags">
+            <span class="tag" data-k="stack"><i></i>HTML/CSS</span>
+            <span class="tag" data-k="stack"><i></i>JavaScript</span>
+            <span class="tag" data-k="lib"><i></i>Chart.js</span>
+            <span class="tag" data-k="method"><i></i>CEP</span>
+            <span class="tag" data-k="method"><i></i>STL</span>
+          </div>
+          <a class="plink mono" href="https://o-hugo.github.io/portfolio/dashboard-ministerio-publico.html" target="_blank" rel="noopener noreferrer"><span class="lab">Acessar Dashboard</span><span class="arr">→</span></a>
+        </div>
+        <div class="card-viz">
+          <svg class="viz" data-kind="imr" viewBox="0 0 200 92" aria-hidden="true"></svg>
+          <div class="figcap mono">fig. 1 · carta I-MR · sinal fora de controle</div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tilt style="--rd:.1s">
+        <div class="card-stripe"></div><div class="sheen"></div>
+        <div class="card-body">
+          <div class="card-meta mono">
+            <span class="pid">p02</span><span class="musig">μ = 50+ · σ = arq</span><span class="pdate">2025</span>
+          </div>
+          <h3 class="card-title">Pipeline ETL de Dados Médicos</h3>
+          <p class="card-text">Consolidação de mais de 50 arquivos Excel com DuckDB para processamento analítico de alta velocidade e Regex para padronização diagnóstica. Dados integralmente anonimizados.</p>
+          <div class="tags">
+            <span class="tag" data-k="stack"><i></i>Python</span>
+            <span class="tag" data-k="lib"><i></i>DuckDB</span>
+            <span class="tag" data-k="lib"><i></i>Pandas</span>
+            <span class="tag" data-k="method"><i></i>Regex</span>
+            <span class="tag" data-k="method"><i></i>Anonimização</span>
+          </div>
+          <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/01_SQL_Python_ETL.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+        </div>
+        <div class="card-viz">
+          <svg class="viz" data-kind="flow" viewBox="0 0 200 92" aria-hidden="true"></svg>
+          <div class="figcap mono">fig. 2 · pipeline · 50+ planilhas → DuckDB</div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tilt style="--rd:.15s">
+        <div class="card-stripe"></div><div class="sheen"></div>
+        <div class="card-body">
+          <div class="card-meta mono">
+            <span class="pid">p03</span><span class="musig">μ = 24 · σ = meses</span><span class="pdate">2025</span>
+          </div>
+          <h3 class="card-title">AED de Séries Temporais Processuais</h3>
+          <p class="card-text">Inventários de 24 meses analisados com STL, testes de estacionariedade (ADF, KPSS), autocorrelação (Ljung-Box), tendência (Mann-Kendall) e CEP via I-MR e CUSUM. Dados sintéticos.</p>
+          <div class="tags">
+            <span class="tag" data-k="stack"><i></i>Python</span>
+            <span class="tag" data-k="lib"><i></i>DuckDB</span>
+            <span class="tag" data-k="lib"><i></i>Statsmodels</span>
+            <span class="tag" data-k="method"><i></i>STL</span>
+            <span class="tag" data-k="method"><i></i>CEP</span>
+          </div>
+          <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/03_AED_inventario_estatistica_aplicada.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+        </div>
+        <div class="card-viz">
+          <svg class="viz" data-kind="cusum" viewBox="0 0 200 92" aria-hidden="true"></svg>
+          <div class="figcap mono">fig. 3 · CUSUM · limiar h = 4,17</div>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tilt style="--rd:.2s">
+        <div class="card-stripe"></div><div class="sheen"></div>
+        <div class="card-body">
+          <div class="card-meta mono">
+            <span class="pid">p04</span><span class="musig">μ = acc · σ = ↑</span><span class="pdate">2025</span>
+          </div>
+          <h3 class="card-title">Previsão de Evasão Escolar</h3>
+          <p class="card-text">Disciplina de Introdução à Ciência de Dados (UFAM). Classificação com Scikit-learn para prever sucesso ou risco de evasão sobre dados públicos da educação.</p>
+          <div class="tags">
+            <span class="tag" data-k="stack"><i></i>Python</span>
+            <span class="tag" data-k="lib"><i></i>Scikit-learn</span>
+            <span class="tag" data-k="lib"><i></i>Seaborn</span>
+            <span class="tag" data-k="method"><i></i>EDA</span>
+            <span class="tag" data-k="ctx"><i></i>Open Data</span>
+          </div>
+          <a class="plink mono" href="https://github.com/o-hugo/portfolio/blob/main/02_Python_Sklearn_Classification.ipynb" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Notebook</span><span class="arr">→</span></a>
+        </div>
+        <div class="card-viz">
+          <svg class="viz" data-kind="bars" viewBox="0 0 200 92" aria-hidden="true"></svg>
+          <div class="figcap mono">fig. 4 · distribuição de classes (treino)</div>
+        </div>
+      </article>
+
+      <div class="n-note mono reveal">n = 4 · ordem cronológica</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░ SOBRE -->
+<section id="sobre">
+  <div class="wrap">
+    <div class="sec-title reveal"><span class="lbl mono">§ sobre</span><span class="line"></span></div>
+    <p class="sobre-p reveal">Bacharelando em <strong>Estatística</strong> na UFAM, com interesse em inferência bayesiana, séries temporais e comunicação de dados. Acredito que boas análises são tão importantes quanto boas visualizações.</p>
+    <div class="tech-grid reveal">
+      <div class="tech-col">
+        <div class="tech-lbl mono"><i style="background:var(--urucum)"></i>linguagens &amp; dados</div>
+        <div class="chips">
+          <span class="chip" style="--c:#e08982">Python</span>
+          <span class="chip" style="--c:#e08982">SQL</span>
+          <span class="chip" style="--c:#e08982">JavaScript</span>
+          <span class="chip" style="--c:#e08982">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="tech-col">
+        <div class="tech-lbl mono"><i style="background:var(--mata)"></i>bibliotecas</div>
+        <div class="chips">
+          <span class="chip" style="--c:#6db589">DuckDB</span>
+          <span class="chip" style="--c:#6db589">Pandas</span>
+          <span class="chip" style="--c:#6db589">Statsmodels</span>
+          <span class="chip" style="--c:#6db589">Scikit-learn</span>
+          <span class="chip" style="--c:#6db589">Seaborn</span>
+          <span class="chip" style="--c:#6db589">Chart.js</span>
+        </div>
+      </div>
+      <div class="tech-col">
+        <div class="tech-lbl mono"><i style="background:var(--ocre)"></i>métodos</div>
+        <div class="chips">
+          <span class="chip" style="--c:#e2a45a">CEP</span>
+          <span class="chip" style="--c:#e2a45a">STL</span>
+          <span class="chip" style="--c:#e2a45a">Séries Temporais</span>
+          <span class="chip" style="--c:#e2a45a">EDA</span>
+          <span class="chip" style="--c:#e2a45a">Regex</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░ CONTATO -->
+<section id="contato">
+  <div class="wrap">
+    <div class="sec-title reveal"><span class="lbl mono">§ contato</span><span class="line"></span></div>
+    <div class="contact-grid reveal">
+      <a class="ccard" data-mag href="https://www.linkedin.com/in/hugo-matheus-637bb0350/" target="_blank" rel="noopener noreferrer">
+        <span class="top">linkedin <span class="arr">→</span></span>
+        <span class="sub">hugo-matheus-637bb0350</span>
+      </a>
+      <a class="ccard" data-mag href="mailto:hugo-matheus.rocha@ufam.edu.br">
+        <span class="top">e-mail <span class="arr">→</span></span>
+        <span class="sub">hugo-matheus.rocha@ufam.edu.br</span>
+      </a>
+      <a class="ccard" data-mag href="https://github.com/o-hugo/portfolio" target="_blank" rel="noopener noreferrer">
+        <span class="top">github <span class="arr">→</span></span>
+        <span class="sub">o-hugo/portfolio</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ░ FOOTER -->
+<div class="wrap">
+  <footer>
+    <span>hugo matheus rocha · estatística ufam · 2026</span>
+    <span>p ≪ 0.001 · built with care</span>
+  </footer>
+</div>
+
+<!-- ░ RÉGUA DO PORTO -->
+<div class="gauge" id="gauge" aria-hidden="true">
+  <div class="gauge-track">
+    <div class="gauge-meta">cota <span class="v" id="gaugeVal">12,70 m</span><br><span style="font-size:7.5px">régua do porto de manaus</span></div>
+    <div class="gauge-fill" id="gaugeFill"></div>
+    <span class="gauge-min" id="gaugeTicks"></span>
+  </div>
+</div>
+
+<style>
+.noanim .pt,.noanim .bar,.noanim .late{transition:none !important}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* ─────────────── ambiente ─────────────── */
+var PRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var COARSE = window.matchMedia('(pointer: coarse)').matches;
+var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+var lerp = function(a,b,k){ return a+(b-a)*k; };
+
+/* ─────────────── vitória-régia: nervuras ─────────────── */
+(function(){
+  var g = document.getElementById('veins');
+  if(!g) return;
+  var SVGNS='http://www.w3.org/2000/svg', N=28, r=118;
+  for(var i=0;i<N;i++){
+    var ang=(i/N)*Math.PI*2 - Math.PI/2;
+    var rel=((ang+Math.PI/2)+Math.PI)%(Math.PI*2)-Math.PI;
+    if(Math.abs(rel)<0.12) continue;
+    var ln=document.createElementNS(SVGNS,'line');
+    ln.setAttribute('x1',0); ln.setAttribute('y1',0);
+    ln.setAttribute('x2',(Math.cos(ang)*r*0.86).toFixed(1));
+    ln.setAttribute('y2',(Math.sin(ang)*r*0.86).toFixed(1));
+    ln.setAttribute('stroke','#0a1e12'); ln.setAttribute('stroke-width','0.8');
+    ln.setAttribute('opacity','0.6');
+    g.appendChild(ln);
+  }
+})();
+
+/* ─────────────── curva normal sob a folha ─────────────── */
+(function(){
+  var svg=document.getElementById('bell'); if(!svg) return;
+  var SVGNS='http://www.w3.org/2000/svg', w=220, h=44;
+  var d='M 0 '+(h-4);
+  for(var x=0;x<=w;x+=2){
+    var z=(x-w/2)/(w/6);
+    var y=h-4-(h-12)*Math.exp(-(z*z)/2);
+    d+=' L '+x+' '+y.toFixed(2);
+  }
+  var fill=document.createElementNS(SVGNS,'path');
+  fill.setAttribute('d',d+' L '+w+' '+(h-4)+' Z');
+  fill.setAttribute('fill','#e08982'); fill.setAttribute('opacity','0.10');
+  var line=document.createElementNS(SVGNS,'path');
+  line.setAttribute('d',d); line.setAttribute('fill','none');
+  line.setAttribute('stroke','#e08982'); line.setAttribute('stroke-width','1.5');
+  var mu=document.createElementNS(SVGNS,'line');
+  mu.setAttribute('x1',w/2); mu.setAttribute('y1',6);
+  mu.setAttribute('x2',w/2); mu.setAttribute('y2',h-4);
+  mu.setAttribute('stroke','#e08982'); mu.setAttribute('stroke-dasharray','3 3'); mu.setAttribute('opacity','0.5');
+  var tx=document.createElementNS(SVGNS,'text');
+  tx.setAttribute('x',w/2+7); tx.setAttribute('y',14);
+  tx.setAttribute('font-size','10'); tx.setAttribute('font-family','JetBrains Mono, monospace');
+  tx.setAttribute('fill','#e08982'); tx.textContent='\u03bc';
+  svg.appendChild(fill); svg.appendChild(line); svg.appendChild(mu); svg.appendChild(tx);
+  if(!PRM){
+    var L=line.getTotalLength();
+    line.style.strokeDasharray=L; line.style.strokeDashoffset=L;
+    setTimeout(function(){
+      line.style.transition='stroke-dashoffset 1.6s cubic-bezier(.22,.8,.3,1)';
+      line.style.strokeDashoffset='0';
+    },500);
+  }
+})();
+
+/* ─────────────── nome: letras emergindo + reflexo ─────────────── */
+(function(){
+  var h1=document.getElementById('heroName'); if(!h1) return;
+  var wrap=document.createElement('span'); wrap.setAttribute('aria-hidden','true');
+  var lines=['Hugo Matheus','Rocha'];
+  var idx=0;
+  lines.forEach(function(line,li){
+    for(var i=0;i<line.length;i++){
+      var ch=line[i];
+      var s=document.createElement('span');
+      s.className='h-letter';
+      s.textContent = ch===' ' ? '\u00A0' : ch;
+      s.style.setProperty('--d',(0.12+idx*0.04).toFixed(2)+'s');
+      wrap.appendChild(s); idx++;
+    }
+    if(li===0){ wrap.appendChild(document.createElement('br')); }
+  });
+  var dot=document.createElement('span');
+  dot.className='h-letter dot'; dot.textContent='.';
+  dot.style.setProperty('--d',(0.12+idx*0.04).toFixed(2)+'s');
+  wrap.appendChild(dot);
+  h1.appendChild(wrap);
+  var mir=document.getElementById('mirrorName');
+  if(mir) mir.textContent='Rocha.';
+  setTimeout(function(){ document.querySelector('.hero').classList.add('ready'); }, 90);
+})();
+
+/* ════════════════════════════════════════
+   RIO NEGRO · canvas interativo do hero
+════════════════════════════════════════ */
+var rioActive=true, encActive=true;
+var RIO=(function(){
+  var hero=document.querySelector('.hero');
+  var cv=document.getElementById('rio');
+  if(!cv) return null;
+  var ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1;
+  var T=Math.random()*100;
+  var trail=[];                 // rastro do cursor na água
+  var ripples=[];               // anéis de toque
+  var pointer=null;             // {x,y}
+  var lastMove=0,lastPos=null,lastSpawn=0;
+  var LINES = COARSE?12:24;
+  var STEP  = COARSE?16:12;
+  var NPART = COARSE?34:78;
+  var NLILY = COARSE?2:4;
+  var parts=[], lilies=[], glints=[];
+
+  function size(){
+    var r=hero.getBoundingClientRect();
+    DPR=Math.min(window.devicePixelRatio||1, COARSE?1.25:1.6);
+    W=Math.max(1,Math.round(r.width)); H=Math.max(1,Math.round(r.height));
+    cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function seed(){
+    parts=[]; lilies=[]; glints=[];
+    for(var i=0;i<NPART;i++){
+      parts.push({
+        x:Math.random()*W, by:Math.random()*H,
+        v:5+Math.random()*16, w:0.4+Math.random()*1.2, ph:Math.random()*6.28,
+        a:0.06+Math.random()*0.14,
+        warm:Math.random()<0.3, s:0.8+Math.random()*1.4
+      });
+    }
+    for(var j=0;j<NLILY;j++){
+      lilies.push({
+        x:Math.random()*W, y:H*(0.22+Math.random()*0.6),
+        baseY:0, r:9+Math.random()*9, rot:Math.random()*6.28,
+        vr:(Math.random()-0.5)*0.2, vx:7+Math.random()*7, vy:0,
+        bvx:7+Math.random()*7
+      });
+      lilies[j].baseY=lilies[j].y;
+    }
+    for(var k=0;k<7;k++){
+      glints.push({x:Math.random()*W, y:H*(0.08+Math.random()*0.5),
+                   len:26+Math.random()*55, ph:Math.random()*6.28});
+    }
+  }
+  size(); seed();
+  window.addEventListener('resize',function(){ size(); seed(); if(PRM) draw(0); });
+
+  function now(){ return performance.now(); }
+
+  function pushTrail(x,y,speed){
+    trail.push({x:x,y:y,t:now(),s:clamp(speed/800,0.3,1.7)});
+    if(trail.length>(COARSE?14:26)) trail.shift();
+  }
+  function wakeY(x,y,tn){
+    var d=0;
+    for(var i=0;i<trail.length;i++){
+      var p=trail[i];
+      var dx=x-p.x; if(dx>170||dx<-170) continue;
+      var dy=y-p.y; if(dy>170||dy<-170) continue;
+      var d2=dx*dx+dy*dy; if(d2>28900) continue;
+      var age=1-(tn-p.t)/1100; if(age<=0) continue;
+      d += (dy>=0?1:-1)*Math.exp(-d2/6800)*age*p.s*26;
+    }
+    return d;
+  }
+  function wakeForce(x,y,tn){
+    var fx=0,fy=0;
+    for(var i=0;i<trail.length;i++){
+      var p=trail[i];
+      var dx=x-p.x, dy=y-p.y;
+      var d2=dx*dx+dy*dy+60; if(d2>40000) continue;
+      var age=1-(tn-p.t)/1100; if(age<=0) continue;
+      var s=Math.exp(-d2/9000)*age*p.s;
+      var inv=1/Math.sqrt(d2);
+      fx+=dx*inv*s; fy+=dy*inv*s;
+    }
+    return {x:fx*1500,y:fy*1500};
+  }
+
+  /* eventos do ponteiro: a mão na água */
+  hero.addEventListener('pointermove',function(e){
+    var r=hero.getBoundingClientRect();
+    var x=e.clientX-r.left, y=e.clientY-r.top;
+    pointer={x:x,y:y};
+    var tn=now(), spd=0;
+    if(lastPos){
+      var dt=Math.max(1,tn-lastMove);
+      spd=Math.hypot(x-lastPos.x,y-lastPos.y)/dt*1000;
+    }
+    lastPos={x:x,y:y}; lastMove=tn;
+    if(!PRM){
+      pushTrail(x,y,spd);
+      if(spd>650 && tn-lastSpawn>140){
+        ripples.push({x:x,y:y,r:4,life:1,max:46});
+        lastSpawn=tn;
+      }
+    }
+    /* paralaxe da vitória-régia */
+    lilyTargetX=(x/r.width-0.5)*18;
+    lilyTargetY=(y/r.height-0.5)*8;
+  });
+  hero.addEventListener('pointerdown',function(e){
+    if(PRM) return;
+    var r=hero.getBoundingClientRect();
+    ripples.push({x:e.clientX-r.left,y:e.clientY-r.top,r:3,life:1,max:90});
+    ripples.push({x:e.clientX-r.left,y:e.clientY-r.top,r:1,life:1.25,max:60});
+    var ring=document.getElementById('touchRing');
+    if(ring){ ring.classList.remove('tap'); void ring.offsetWidth; ring.classList.add('tap'); }
+  });
+  hero.addEventListener('pointerleave',function(){ pointer=null; lastPos=null; });
+
+  /* anel de contato + paralaxe (interpolados) */
+  var ring=document.getElementById('touchRing');
+  var ringX=0,ringY=0,lilyTargetX=0,lilyTargetY=0,lilyPX=0,lilyPY=0;
+  var heroLily=document.getElementById('heroLily');
+
+  function drawLily(l){
+    ctx.save();
+    ctx.translate(l.x,l.y);
+    ctx.fillStyle='rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.ellipse(0,l.r*0.34,l.r*1.02,l.r*0.2,0,0,6.2832); ctx.fill();
+    ctx.rotate(l.rot);
+    ctx.fillStyle='#162e1f';
+    ctx.beginPath(); ctx.arc(0,0,l.r,0,6.2832); ctx.fill();
+    ctx.fillStyle='#26442f';
+    ctx.beginPath(); ctx.arc(0,0,l.r*0.78,0,6.2832); ctx.fill();
+    ctx.strokeStyle='#0d2719'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.arc(0,0,l.r*0.5,0,6.2832); ctx.stroke();
+    ctx.fillStyle='#06090d';
+    ctx.beginPath();
+    ctx.moveTo(-1.4,-l.r+1); ctx.lineTo(0,-l.r*0.18); ctx.lineTo(1.4,-l.r+1);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function draw(dt){
+    T+=dt;
+    var tn=now();
+    while(trail.length && tn-trail[0].t>1100) trail.shift();
+    ctx.clearRect(0,0,W,H);
+
+    /* linhas de correnteza */
+    var midY=H*0.46;
+    for(var i=0;i<LINES;i++){
+      var baseY=((i+0.7)/(LINES+0.5))*H;
+      var depth=Math.exp(-Math.pow((baseY-midY)/(H*0.34),2));
+      var a=(0.045+0.085*depth)*(0.7+0.5*Math.abs(Math.sin(i*2.3)));
+      ctx.strokeStyle='rgba(98,132,158,'+a.toFixed(3)+')';
+      ctx.lineWidth=(i%6===0)?1.4:1;
+      ctx.beginPath();
+      var first=true;
+      for(var x=-12;x<=W+12;x+=STEP){
+        var y=baseY
+          +4.6*Math.sin(x*0.006+T*0.55+i*1.31)
+          +2.7*Math.sin(x*0.016-T*0.9+i*0.7)
+          +1.5*Math.sin(x*0.045+T*1.8+i)
+          +wakeY(x,baseY,tn);
+        if(first){ ctx.moveTo(x,y); first=false; } else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+
+    /* brilhos de luar */
+    for(var g=0;g<glints.length;g++){
+      var gl=glints[g];
+      var ga=0.06+0.16*Math.max(0,Math.sin(T*0.6+gl.ph));
+      var gy=gl.y+3*Math.sin(T*0.5+gl.ph)+wakeY(gl.x,gl.y,tn)*0.7;
+      var grd=ctx.createLinearGradient(gl.x,0,gl.x+gl.len,0);
+      grd.addColorStop(0,'rgba(205,224,242,0)');
+      grd.addColorStop(0.5,'rgba(205,224,242,'+ga.toFixed(3)+')');
+      grd.addColorStop(1,'rgba(205,224,242,0)');
+      ctx.strokeStyle=grd; ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.moveTo(gl.x,gy); ctx.lineTo(gl.x+gl.len,gy); ctx.stroke();
+    }
+
+    /* sedimento à deriva */
+    for(var p=0;p<parts.length;p++){
+      var pt=parts[p];
+      pt.x+=(pt.v+6)*dt;
+      if(pt.x>W+12){ pt.x=-10; pt.by=Math.random()*H; }
+      var py=pt.by+2.2*Math.sin(T*pt.w+pt.ph)+wakeY(pt.x,pt.by,tn)*0.55;
+      ctx.fillStyle=pt.warm
+        ? 'rgba(226,164,90,'+pt.a.toFixed(3)+')'
+        : 'rgba(160,190,214,'+pt.a.toFixed(3)+')';
+      ctx.fillRect(pt.x,py,pt.s+pt.v*0.05,pt.s*0.8);
+    }
+
+    /* folhas de vitória-régia à deriva, empurradas pelo cursor */
+    for(var l=0;l<lilies.length;l++){
+      var li=lilies[l];
+      var f=wakeForce(li.x,li.y,tn);
+      li.vx+=f.x*dt; li.vy+=f.y*dt;
+      li.vx+=(li.bvx-li.vx)*Math.min(1,dt*0.9);
+      li.vy+=((li.baseY-li.y)*0.5-li.vy*0.6)*dt*2;
+      li.vr+=f.x*dt*0.0009;
+      li.vr*= (1-Math.min(1,dt*0.8));
+      li.x+=li.vx*dt; li.y+=li.vy*dt; li.rot+=(0.06+li.vr)*dt;
+      li.y=clamp(li.y,H*0.12,H*0.94);
+      if(li.x>W+30){ li.x=-26; li.baseY=H*(0.2+Math.random()*0.65); li.y=li.baseY; }
+      if(li.x<-30){ li.x=W+26; }
+      drawLily(li);
+    }
+
+    /* ondulações de toque */
+    for(var rp=ripples.length-1;rp>=0;rp--){
+      var R=ripples[rp];
+      R.r+=85*dt; R.life-=dt*0.9;
+      if(R.life<=0||R.r>R.max+40){ ripples.splice(rp,1); continue; }
+      var ra=Math.max(0,R.life)*0.5;
+      ctx.strokeStyle='rgba(178,206,228,'+ra.toFixed(3)+')';
+      ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.ellipse(R.x,R.y,R.r,R.r*0.36,0,0,6.2832); ctx.stroke();
+      ctx.strokeStyle='rgba(178,206,228,'+(ra*0.5).toFixed(3)+')';
+      ctx.beginPath(); ctx.ellipse(R.x,R.y,R.r*0.62,R.r*0.62*0.36,0,0,6.2832); ctx.stroke();
+    }
+  }
+
+  function tick(dt){
+    if(rioActive) draw(dt);
+    /* anel de contato */
+    if(ring && !COARSE){
+      if(pointer){
+        ringX=lerp(ringX,pointer.x,0.3); ringY=lerp(ringY,pointer.y,0.3);
+        ring.style.left=ringX+'px'; ring.style.top=ringY+'px';
+        ring.classList.add('on');
+      }else ring.classList.remove('on');
+    }
+    /* paralaxe da folha grande */
+    if(heroLily && !PRM){
+      lilyPX=lerp(lilyPX,lilyTargetX,0.06);
+      lilyPY=lerp(lilyPY,lilyTargetY,0.06);
+      heroLily.style.setProperty('--plx',lilyPX.toFixed(1)+'px');
+      heroLily.style.transform='translateY('+lilyPY.toFixed(1)+'px)';
+    }
+  }
+  return {tick:tick, drawStatic:function(){draw(0);}};
+})();
+
+/* ════════════════════════════════════════
+   ENCONTRO DAS ÁGUAS · Solimões + Negro
+════════════════════════════════════════ */
+var ENC=(function(){
+  var box=document.getElementById('encontro');
+  var cv=document.getElementById('aguas');
+  if(!box||!cv) return null;
+  var ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1,T=Math.random()*50;
+  var px=null,py=null,press=0;
+  var topF=[],botF=[];
+
+  function size(){
+    var r=box.getBoundingClientRect();
+    DPR=Math.min(window.devicePixelRatio||1,1.6);
+    W=Math.max(1,Math.round(r.width)); H=Math.max(1,Math.round(r.height));
+    cv.width=W*DPR; cv.height=H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function seed(){
+    topF=[];botF=[];
+    var nt=COARSE?22:40, nb=COARSE?9:16;
+    for(var i=0;i<nt;i++) topF.push({x:Math.random()*W,y:Math.random()*H*0.55,v:48+Math.random()*34,a:0.12+Math.random()*0.2});
+    for(var j=0;j<nb;j++) botF.push({x:Math.random()*W,y:H*0.72+Math.random()*H*0.24,v:14+Math.random()*12,a:0.08+Math.random()*0.12});
+  }
+  size(); seed();
+  window.addEventListener('resize',function(){ size(); seed(); if(PRM) draw(0); });
+
+  box.addEventListener('pointermove',function(e){
+    var r=box.getBoundingClientRect();
+    px=e.clientX-r.left; py=e.clientY-r.top;
+  });
+  box.addEventListener('pointerleave',function(){ px=null; py=null; });
+
+  function rawB(x){
+    return H*0.64
+      +7*Math.sin(x*0.012+T*0.6)
+      +4*Math.sin(x*0.027-T*0.9)
+      +2.5*Math.sin(x*0.05+T*1.7);
+  }
+  function bnd(x){
+    var b=rawB(x);
+    if(press>0.01 && px!==null){
+      var dx=x-px;
+      var g=Math.exp(-dx*dx/12800);
+      var dir=(py<rawB(px))?1:-1;        /* a água empurrada se curva para longe da mão */
+      b+=dir*18*g*press;
+    }
+    return b;
+  }
+
+  function draw(dt){
+    T+=dt;
+    press=lerp(press,(px!==null)?1:0,Math.min(1,dt*6));
+    ctx.clearRect(0,0,W,H);
+
+    /* Negro: fundo */
+    var gN=ctx.createLinearGradient(0,0,0,H);
+    gN.addColorStop(0,'#0a1016'); gN.addColorStop(1,'#04070b');
+    ctx.fillStyle=gN; ctx.fillRect(0,0,W,H);
+
+    /* fronteira amostrada */
+    var bs=[],x;
+    for(x=0;x<=W+8;x+=8) bs.push([x,bnd(x)]);
+
+    /* Solimões: água barrenta acima da fronteira */
+    var gS=ctx.createLinearGradient(0,0,0,H*0.82);
+    gS.addColorStop(0,'#c29c62'); gS.addColorStop(0.65,'#9a7644'); gS.addColorStop(1,'#6e5430');
+    ctx.fillStyle=gS;
+    ctx.beginPath(); ctx.moveTo(0,0);
+    for(var i=0;i<bs.length;i++) ctx.lineTo(bs[i][0],bs[i][1]);
+    ctx.lineTo(W,0); ctx.closePath(); ctx.fill();
+
+    /* estrias do Solimões (corre mais rápido) */
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0,0);
+    for(i=0;i<bs.length;i++) ctx.lineTo(bs[i][0],bs[i][1]);
+    ctx.lineTo(W,0); ctx.closePath(); ctx.clip();
+    for(var s=0;s<4;s++){
+      var sy=H*(0.12+s*0.13);
+      ctx.strokeStyle='rgba(240,219,180,'+(0.10+0.04*s)+')';
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      for(x=0;x<=W;x+=10){
+        var yy=sy+3*Math.sin(x*0.02+T*1.6+s*2)+2*Math.sin(x*0.05-T*2.2);
+        if(x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy);
+      }
+      ctx.stroke();
+    }
+    for(i=0;i<topF.length;i++){
+      var f=topF[i];
+      f.x+=f.v*dt; if(f.x>W+8){f.x=-6;f.y=Math.random()*H*0.56;}
+      if(f.y>bnd(f.x)-5) f.y=Math.random()*(bnd(f.x)-14)+4;
+      ctx.fillStyle='rgba(243,225,190,'+f.a+')';
+      ctx.fillRect(f.x,f.y,2+f.v*0.05,1.4);
+    }
+    ctx.restore();
+
+    /* filamentos: as águas se tocam sem se misturar */
+    ctx.lineWidth=1.2;
+    ctx.strokeStyle='rgba(187,148,92,0.4)';
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){
+      var fy=bs[i][1]+5+3*Math.sin(bs[i][0]*0.06+T*2.4);
+      if(i===0) ctx.moveTo(bs[i][0],fy); else ctx.lineTo(bs[i][0],fy);
+    }
+    ctx.stroke();
+    ctx.strokeStyle='rgba(10,18,26,0.55)';
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){
+      var fy2=bs[i][1]-4-3*Math.sin(bs[i][0]*0.045-T*1.8);
+      if(i===0) ctx.moveTo(bs[i][0],fy2); else ctx.lineTo(bs[i][0],fy2);
+    }
+    ctx.stroke();
+
+    /* sombra do Negro logo abaixo da fronteira */
+    ctx.strokeStyle='rgba(0,0,0,0.22)'; ctx.lineWidth=9;
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){
+      if(i===0) ctx.moveTo(bs[i][0],bs[i][1]+6); else ctx.lineTo(bs[i][0],bs[i][1]+6);
+    }
+    ctx.stroke();
+
+    /* linha viva da fronteira */
+    ctx.strokeStyle='rgba(236,231,218,0.30)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    for(i=0;i<bs.length;i++){
+      if(i===0) ctx.moveTo(bs[i][0],bs[i][1]); else ctx.lineTo(bs[i][0],bs[i][1]);
+    }
+    ctx.stroke();
+
+    /* flocos do Negro (mais lento, mais escuro) */
+    for(i=0;i<botF.length;i++){
+      var b=botF[i];
+      b.x+=b.v*dt; if(b.x>W+8){b.x=-6;b.y=H*0.7+Math.random()*H*0.26;}
+      if(b.y<bnd(b.x)+6) b.y=bnd(b.x)+8+Math.random()*(H-bnd(b.x)-14);
+      ctx.fillStyle='rgba(140,172,196,'+b.a+')';
+      ctx.fillRect(b.x,b.y,1.8+b.v*0.04,1.3);
+    }
+  }
+  return {tick:function(dt){ if(encActive) draw(dt); }, drawStatic:function(){draw(0);}};
+})();
+
+/* ─────────────── laço mestre, pausável ─────────────── */
+(function(){
+  if(PRM){
+    if(RIO) RIO.drawStatic();
+    if(ENC) ENC.drawStatic();
+    return;
+  }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.target.classList.contains('hero')) rioActive=e.isIntersecting;
+      if(e.target.id==='encontro') encActive=e.isIntersecting;
+    });
+  },{threshold:0});
+  var heroEl=document.querySelector('.hero');
+  var encEl=document.getElementById('encontro');
+  if(heroEl) io.observe(heroEl);
+  if(encEl) io.observe(encEl);
+
+  var last=performance.now(), raf=0;
+  function frame(nowT){
+    var dt=Math.min((nowT-last)/1000,0.05); last=nowT;
+    if(RIO) RIO.tick(dt);
+    if(ENC) ENC.tick(dt);
+    raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){ cancelAnimationFrame(raf); }
+    else { last=performance.now(); raf=requestAnimationFrame(frame); }
+  });
+})();
+
+/* ════════════════════════════════════════
+   VISUALIZAÇÕES dos projetos
+════════════════════════════════════════ */
+var SVGNS='http://www.w3.org/2000/svg';
+function E(tag,attrs,parent){
+  var n=document.createElementNS(SVGNS,tag);
+  for(var k in attrs) n.setAttribute(k,attrs[k]);
+  if(parent) parent.appendChild(n);
+  return n;
+}
+function monoText(svg,x,y,str,fill,size,anchor){
+  var t=E('text',{x:x,y:y,'font-size':size||7,
+    'font-family':'JetBrains Mono, monospace',fill:fill,
+    'text-anchor':anchor||'start','letter-spacing':'0.5'},svg);
+  t.textContent=str; return t;
+}
+
+function buildIMR(svg){
+  var UCL=22,CL=50,LCL=78;
+  E('line',{x1:4,y1:UCL,x2:182,y2:UCL,stroke:'#5a636c','stroke-dasharray':'3 3',opacity:0.9},svg);
+  E('line',{x1:4,y1:CL, x2:196,y2:CL, stroke:'#3a434c'},svg);
+  E('line',{x1:4,y1:LCL,x2:196,y2:LCL,stroke:'#5a636c','stroke-dasharray':'3 3',opacity:0.9},svg);
+  monoText(svg,196,UCL-3,'UCL','#5a636c',7,'end');
+  monoText(svg,196,LCL+9,'LCL','#5a636c',7,'end');
+  var ys=[56,48,58,44,52,40,50,46,12,42,54,46,50];
+  var d='';
+  for(var i=0;i<ys.length;i++){
+    var x=10+i*15;
+    d+=(i===0?'M':' L')+' '+x+' '+ys[i];
+  }
+  E('path',{d:d,fill:'none',stroke:'#e08982','stroke-width':1.6,
+    'class':'draw','stroke-linejoin':'round'},svg);
+  for(i=0;i<ys.length;i++){
+    var cx=10+i*15, out=(i===8);
+    if(out){
+      E('circle',{cx:cx,cy:ys[i],r:4,fill:'none',stroke:'#ff5d4f',
+        'stroke-width':1.2,'class':'halo'},svg);
+    }
+    var c=E('circle',{cx:cx,cy:ys[i],r:out?3.2:2.4,
+      fill:out?'#ff5d4f':'#ece7da','class':'pt'},svg);
+    c.style.setProperty('--d',(0.25+i*0.09).toFixed(2)+'s');
+  }
+}
+
+function buildFlow(svg){
+  var boxes=[
+    {x:6,  c:'#e2a45a', lbl:'XLSX', d:'0s'},
+    {x:72, c:'#e08982', lbl:'ETL',  d:'0.85s'},
+    {x:138,c:'#6db589', lbl:'DB',   d:'1.7s'}
+  ];
+  for(var i=0;i<boxes.length;i++){
+    var b=boxes[i];
+    var g=E('g',{'class':'fbox'},svg);
+    g.style.color=b.c; g.style.setProperty('--d',b.d);
+    E('rect',{x:b.x,y:30,width:52,height:26,rx:3,fill:'none',
+      stroke:b.c,'stroke-width':1.3},g);
+    monoText(g,b.x+26,47,b.lbl,b.c,8.5,'middle');
+    if(i<2){
+      E('line',{x1:b.x+52,y1:43,x2:b.x+66,y2:43,stroke:'#5a636c','stroke-width':1.2},svg);
+      E('polygon',{points:(b.x+66)+',40 '+(b.x+70)+',43 '+(b.x+66)+',46',fill:'#5a636c'},svg);
+    }
+  }
+  for(var j=0;j<4;j++){
+    var dot=E('circle',{cx:16,cy:43,r:2.4,fill:'#f0dcb2','class':'fdot'},svg);
+    dot.style.setProperty('--d',(j*0.75).toFixed(2)+'s');
+  }
+  var note=monoText(svg,100,80,'50+ planilhas \u00b7 1 banco anal\u00edtico','#5a636c',7,'middle');
+  note.setAttribute('class','late');
+  note.style.setProperty('--d','1.4s');
+}
+
+function buildCUSUM(svg){
+  E('line',{x1:4,y1:80,x2:196,y2:80,stroke:'#3a434c'},svg);
+  E('line',{x1:4,y1:26,x2:196,y2:26,stroke:'#e2a45a','stroke-dasharray':'4 3',opacity:0.9},svg);
+  monoText(svg,194,21,'h = 4,17','#e2a45a',7,'end');
+  monoText(svg,6,76,'C\u207a\u209c','#5a636c',7,'start');
+  var d='',y=80,cross=null;
+  for(var x=6;x<=196;x+=4){
+    if(x<104){ y=80-(Math.sin(x*0.11)*3+Math.sin(x*0.05)*2); }
+    else{ y-=3.4+Math.sin(x*0.3)*0.8; }
+    y=Math.max(12,y);
+    d+=(x===6?'M':' L')+' '+x+' '+y.toFixed(1);
+    if(!cross && y<=26) cross=[x,y];
+  }
+  E('path',{d:d,fill:'none',stroke:'#e08982','stroke-width':1.6,
+    'class':'draw','stroke-linejoin':'round'},svg);
+  if(cross){
+    E('circle',{cx:cross[0],cy:cross[1],r:4.5,fill:'none',stroke:'#ff5d4f',
+      'stroke-width':1.2,'class':'halo'},svg);
+    var c=E('circle',{cx:cross[0],cy:cross[1],r:3,fill:'#ff5d4f','class':'pt'},svg);
+    c.style.setProperty('--d','1.35s');
+    var al=monoText(svg,cross[0]-8,cross[1]+3,'alarme','#ff5d4f',7.5,'end');
+    al.setAttribute('class','late');
+    al.style.setProperty('--d','1.7s');
+  }
+}
+
+function buildBars(svg){
+  E('line',{x1:4,y1:84,x2:196,y2:84,stroke:'#3a434c'},svg);
+  var hs=[38,22,12,8,6,14,28,34,42,30,18,10];
+  for(var i=0;i<hs.length;i++){
+    var r=E('rect',{x:8+i*15,y:84-hs[i],width:10,height:hs[i],
+      fill:(i===8)?'#e08982':'rgba(236,231,218,0.28)','class':'bar'},svg);
+    r.style.setProperty('--d',(0.1+i*0.06).toFixed(2)+'s');
+  }
+  var mk=monoText(svg,8+8*15+5,84-42-5,'\u2191','#e08982',9,'middle');
+  mk.setAttribute('class','late');
+  mk.style.setProperty('--d','1.1s');
+}
+
+(function(){
+  document.querySelectorAll('.viz').forEach(function(svg){
+    var kind=svg.getAttribute('data-kind');
+    if(kind==='imr') buildIMR(svg);
+    else if(kind==='flow') buildFlow(svg);
+    else if(kind==='cusum') buildCUSUM(svg);
+    else if(kind==='bars') buildBars(svg);
+
+    svg.__lastPlay=0;
+    svg.__play=function(){
+      var nowT=performance.now();
+      if(nowT-svg.__lastPlay<1400) return;
+      svg.__lastPlay=nowT;
+      svg.classList.add('noanim');
+      svg.classList.remove('play');
+      var draws=svg.querySelectorAll('.draw');
+      draws.forEach(function(p){
+        var L=p.getTotalLength();
+        p.style.transition='none';
+        p.style.strokeDasharray=L;
+        p.style.strokeDashoffset=L;
+      });
+      void svg.getBoundingClientRect();
+      svg.classList.remove('noanim');
+      requestAnimationFrame(function(){
+        draws.forEach(function(p){
+          p.style.transition='stroke-dashoffset 1.6s cubic-bezier(.22,.8,.3,1)';
+          p.style.strokeDashoffset='0';
+        });
+        svg.classList.add('play');
+      });
+    };
+  });
+
+  document.querySelectorAll('.card').forEach(function(card){
+    var svg=card.querySelector('.viz');
+    if(!svg) return;
+    card.addEventListener('mouseenter',function(){
+      if(card.classList.contains('in')) svg.__play();
+    });
+  });
+})();
+
+/* ─────────────── revelar ao rolar ─────────────── */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(PRM){ els.forEach(function(e){e.classList.add('in');
+    var v=e.querySelector('.viz'); if(v) v.classList.add('play');}); return; }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      en.target.classList.add('in');
+      var v=en.target.querySelector('.viz');
+      if(v) setTimeout(function(){ v.__play(); },350);
+      io.unobserve(en.target);
+    });
+  },{threshold:0.18,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){ io.observe(e); });
+})();
+
+/* ─────────────── inclinação + brilho úmido dos cartões ─────────────── */
+(function(){
+  if(COARSE||PRM) return;
+  document.querySelectorAll('[data-tilt]').forEach(function(card){
+    card.addEventListener('pointermove',function(e){
+      var r=card.getBoundingClientRect();
+      var x=e.clientX-r.left, y=e.clientY-r.top;
+      var nx=x/r.width-0.5, ny=y/r.height-0.5;
+      card.style.transform='translateY(-3px) rotateX('+(-ny*3.6).toFixed(2)+'deg) rotateY('+(nx*4.6).toFixed(2)+'deg)';
+      card.style.setProperty('--mx',x+'px');
+      card.style.setProperty('--my',y+'px');
+    });
+    card.addEventListener('pointerleave',function(){
+      card.style.transform='';
+    });
+  });
+})();
+
+/* ─────────────── cartões de contato magnéticos ─────────────── */
+(function(){
+  if(COARSE||PRM) return;
+  document.querySelectorAll('[data-mag]').forEach(function(el){
+    el.addEventListener('pointermove',function(e){
+      var r=el.getBoundingClientRect();
+      var nx=(e.clientX-r.left)/r.width-0.5;
+      var ny=(e.clientY-r.top)/r.height-0.5;
+      el.style.transform='translate('+(nx*10).toFixed(1)+'px,'+(ny*6).toFixed(1)+'px)';
+    });
+    el.addEventListener('pointerleave',function(){ el.style.transform=''; });
+  });
+})();
+
+/* ─────────────── régua do porto · cota do rio = progresso de leitura ─────────────── */
+(function(){
+  var fill=document.getElementById('gaugeFill');
+  var val=document.getElementById('gaugeVal');
+  var track=document.querySelector('.gauge-track');
+  var minNote=document.getElementById('gaugeTicks');
+  if(!fill||!val||!track) return;
+  var MIN=12.70, MAX=30.02;
+  if(minNote) minNote.textContent='12,70 \u00b7 vazante 2023';
+  [14,18,22,26].forEach(function(v){
+    var s=document.createElement('span');
+    s.className='gauge-tick';
+    s.style.bottom=(((v-MIN)/(MAX-MIN))*100).toFixed(1)+'%';
+    s.textContent=v+' m';
+    track.appendChild(s);
+  });
+  var top=document.createElement('span');
+  top.className='gauge-tick';
+  top.style.bottom='100%';
+  top.style.color='#e2a45a';
+  top.textContent='30,02 \u00b7 cheia 2021';
+  track.appendChild(top);
+
+  function onScroll(){
+    var doc=document.documentElement;
+    var max=Math.max(1,doc.scrollHeight-window.innerHeight);
+    var p=clamp(window.scrollY/max,0,1);
+    fill.style.transform='scaleY('+p.toFixed(4)+')';
+    var v=MIN+p*(MAX-MIN);
+    val.textContent=v.toFixed(2).replace('.',',')+' m';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+})();
+
+})();
 </script>
-
 </body>
 </html>
