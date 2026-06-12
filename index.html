@@ -104,7 +104,7 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
    HERO · a superfície do rio
 ─────────────────────────────────────────────── */
 .hero{
-  position:relative;min-height:clamp(360px,56svh,520px);
+  position:relative;min-height:auto;
   display:flex;flex-direction:column;justify-content:flex-start;
   overflow:hidden;
   background:radial-gradient(ellipse 120% 90% at 30% 20%, #0d161f 0%, #070d13 45%, #04070b 100%);
@@ -123,15 +123,15 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
 .hero-stage{
   position:relative;z-index:2;
   width:min(var(--wrap),100% - 48px);margin-inline:auto;
-  display:flex;align-items:center;gap:clamp(20px,4vw,44px);
-  padding-block:64px 40px;
+  display:flex;align-items:center;gap:clamp(16px,3vw,36px);
+  padding-block:72px 32px;
 }
 .hero-lily{
-  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;
   animation:lilyFloat 9s ease-in-out infinite;
   will-change:transform;
 }
-.hero-lily svg#vitoria{width:clamp(150px,20vw,210px);height:auto}
+.hero-lily svg#vitoria{width:clamp(110px,14vw,160px);height:auto}
 @keyframes lilyFloat{
   0%,100%{transform:translate3d(var(--plx,0px),0,0) rotate(0deg)}
   50%{transform:translate3d(var(--plx,0px),-9px,0) rotate(.7deg)}
@@ -140,15 +140,12 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
 
 .hero-text{animation:textFloat 7s ease-in-out infinite}
 @keyframes textFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.kicker{
-  font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--urucum);margin-bottom:12px;
-}
+.kicker{display:none}
 .h-name{
-  margin:0;font-weight:800;
-  font-size:clamp(30px,5.2vw,48px);
-  line-height:.96;letter-spacing:-0.035em;color:#f3f0e7;
-  text-shadow:0 8px 32px rgba(0,0,0,.7);
+  margin:0;font-weight:700;
+  font-size:clamp(20px,3vw,32px);
+  line-height:1.05;letter-spacing:-0.025em;color:#f3f0e7;
+  text-shadow:0 4px 18px rgba(0,0,0,.7);
 }
 .h-name .dot{color:var(--urucum)}
 .h-letter{
@@ -160,8 +157,8 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
 .hero.ready .h-letter{opacity:1;transform:translateY(0);filter:blur(0)}
 /* reflexo na água parada */
 .mirror-wrap{
-  height:.7em;margin-top:3px;overflow:hidden;pointer-events:none;
-  font-size:clamp(30px,5.2vw,48px);line-height:.96;
+  height:.5em;margin-top:2px;overflow:hidden;pointer-events:none;
+  font-size:clamp(20px,3vw,32px);line-height:1.05;
   -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 88%);
           mask-image:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 88%);
   opacity:0;transition:opacity 1.4s ease .9s;
@@ -177,10 +174,10 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
   50%{transform:scaleY(-1) skewX(1.6deg) translateX(3px)}
 }
 .h-tag{
-  font-size:clamp(13px,1.5vw,14.5px);color:rgba(236,231,218,.78);
-  max-width:430px;line-height:1.55;margin:12px 0 12px;
+  font-size:clamp(12px,1.3vw,13.5px);color:rgba(236,231,218,.72);
+  max-width:400px;line-height:1.5;margin:8px 0 8px;
 }
-.h-bayes{font-size:clamp(10px,1.3vw,11.5px);letter-spacing:.08em;color:rgba(236,231,218,.42)}
+.h-bayes{font-size:clamp(9.5px,1.1vw,11px);letter-spacing:.08em;color:rgba(236,231,218,.38)}
 
 .scroll-hint{
   position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
@@ -205,17 +202,17 @@ a{-webkit-tap-highlight-color:transparent;color:inherit}
 @keyframes tap{0%{scale:1;opacity:1}100%{scale:2.1;opacity:0}}
 
 @media (max-width:899px){
-  .hero{min-height:auto}
-  .hero-stage{flex-direction:column;text-align:center;padding-block:58px 44px;gap:14px}
-  .hero-text{display:flex;flex-direction:column;align-items:center}
-  .hero-lily svg#vitoria{width:clamp(118px,34vw,168px)}
-  .hero-coords{top:62px;right:14px;font-size:8.5px}
-  .h-tag{margin:10px 0 10px}
+  .hero-stage{flex-direction:row;text-align:left;padding-block:66px 28px;gap:16px;align-items:center}
+  .hero-lily svg#vitoria{width:clamp(88px,22vw,130px)}
+  .hero-coords{top:60px;right:14px;font-size:8px}
+  .h-tag{margin:6px 0 6px;font-size:12px}
 }
-@media (max-width:480px){
-  .hero-stage{padding-block:52px 40px}
-  .hero-lily{gap:6px}
-  .fig-cap{font-size:8.5px}
+@media (max-width:600px){
+  .hero-stage{padding-block:60px 24px;gap:12px}
+  .hero-lily svg#vitoria{width:clamp(72px,18vw,100px)}
+  .mirror-wrap{display:none}
+  .fig-cap{display:none}
+  .h-bayes{display:none}
 }
 @media (pointer:coarse){ .touch-ring{display:none} }
 
@@ -551,7 +548,6 @@ footer{
     </div>
 
     <div class="hero-text">
-      <div class="kicker mono">▌ bacharelando · estatística · ufam</div>
       <h1 class="h-name" id="heroName" aria-label="Hugo Matheus Rocha"></h1>
       <div class="mirror-wrap" aria-hidden="true"><span class="mirror" id="mirrorName"></span></div>
       <p class="h-tag">Estatístico em formação. Transformo ruído em sinal com pipelines reprodutíveis, controle de processo e séries temporais.</p>
