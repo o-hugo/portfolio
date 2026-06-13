@@ -520,6 +520,27 @@ footer{
   <div class="sec-title reveal"><span class="lbl mono">§ projetos selecionados</span><span class="line"></span></div>
   <div class="cards">
 
+    <article class="card reveal" data-tilt style="--rd:.02s">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta mono"><span class="pid">p05</span><span class="musig">μ = posterior · σ = h*</span><span class="pdate">2026</span></div>
+        <h3 class="card-title">Monitoramento Bayesiano de Séries Temporais</h3>
+        <p class="card-text">Sistema que combina um modelo estrutural bayesiano (BSTS — tendência local linear + sazonalidade mensal) com CUSUM sobre os resíduos padronizados das previsões de 1 passo, detectando mudanças de patamar sustentadas. Dados censurados.</p>
+        <div class="tags">
+          <span class="tag" data-k="stack"><i></i>Python</span>
+          <span class="tag" data-k="method"><i></i>BSTS</span>
+          <span class="tag" data-k="method"><i></i>CUSUM</span>
+          <span class="tag" data-k="method"><i></i>Inf. Bayesiana</span>
+          <span class="tag" data-k="ctx"><i></i>Dados Censurados</span>
+        </div>
+        <a class="plink mono" href="https://github.com/o-hugo/bsts_bayesian_cusum_monitoring_censored" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Repositório</span><span class="arr">→</span></a>
+      </div>
+      <div class="card-viz">
+        <svg class="viz" data-kind="cusum" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 5 · CUSUM · resíduos padronizados</div>
+      </div>
+    </article>
+
     <article class="card reveal" data-tilt style="--rd:.05s">
       <div class="card-stripe"></div>
       <div class="card-body">
@@ -613,7 +634,7 @@ footer{
       </div>
     </article>
 
-    <div class="n-note mono reveal">n = 4 · ordem cronológica</div>
+    <div class="n-note mono reveal">n = 5 · ordem cronológica</div>
   </div>
 </section>
 
