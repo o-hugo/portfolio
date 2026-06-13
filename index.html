@@ -269,6 +269,15 @@ section{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad);paddi
 .viz .late{opacity:0;transition:opacity .6s ease;transition-delay:var(--d,1.6s)}
 .viz.play .late{opacity:1}
 .noanim .pt,.noanim .bar,.noanim .late{transition:none !important}
+/* viz BSTS · brilhos contínuos */
+.viz .bsts-line{animation:bstsGlow 2.6s ease-in-out infinite}
+@keyframes bstsGlow{0%,100%{filter:drop-shadow(0 0 1px rgba(224,137,130,.45))}50%{filter:drop-shadow(0 0 5px rgba(224,137,130,.95))}}
+.viz .bsts-band{animation:bstsBreath 4.5s ease-in-out infinite}
+@keyframes bstsBreath{0%,100%{opacity:.62}50%{opacity:1}}
+.viz .bsts-rider{filter:drop-shadow(0 0 4px #ffd9a0)}
+.viz .bsts-pt{animation:bstsPt 2.2s ease-in-out infinite}
+@keyframes bstsPt{0%,100%{filter:drop-shadow(0 0 2px #ff5d4f)}50%{filter:drop-shadow(0 0 8px #ff5d4f)}}
+@media (prefers-reduced-motion:reduce){.viz .bsts-line,.viz .bsts-band,.viz .bsts-pt,.viz .bsts-rider{animation:none}}
 
 /* ───────────────────────────────────────────────
    SOBRE
@@ -1043,26 +1052,38 @@ function buildBsts(svg){
   function up(i){return center(i)-8;}
   function lo(i){return center(i)+8;}
   function obs(i){return center(i)+1.6*Math.sin(i*1.7)-(i>=SHIFT?JUMP:0);}
-  /* banda de previsão (credível) */
+  /* gradiente brilhante para a linha observada */
+  var defs=E('defs',{},svg);
+  var grad=E('linearGradient',{id:'bstsGrad',x1:'0',y1:'0',x2:'1',y2:'0'},defs);
+  E('stop',{offset:'0%','stop-color':'#9fb4c2'},grad);
+  E('stop',{offset:'62%','stop-color':'#e08982'},grad);
+  E('stop',{offset:'100%','stop-color':'#ff7a5c'},grad);
+  /* banda de previsão (credível) — respira */
   var d='M '+cx(0).toFixed(1)+' '+up(0).toFixed(1);
   for(i=1;i<n;i++) d+=' L '+cx(i).toFixed(1)+' '+up(i).toFixed(1);
   for(i=n-1;i>=0;i--) d+=' L '+cx(i).toFixed(1)+' '+lo(i).toFixed(1);
   d+=' Z';
-  var band=E('path',{d:d,fill:'#5b86b0','fill-opacity':0.16,stroke:'none','class':'late'},svg);
-  band.style.setProperty('--d','0.2s');
+  E('path',{d:d,fill:'#5b86b0','fill-opacity':0.18,stroke:'none','class':'bsts-band'},svg);
   /* linha prevista (centro), tracejada */
   var dc='M '+cx(0).toFixed(1)+' '+center(0).toFixed(1);
   for(i=1;i<n;i++) dc+=' L '+cx(i).toFixed(1)+' '+center(i).toFixed(1);
-  var cl=E('path',{d:dc,fill:'none',stroke:'#7d9bc0','stroke-width':1,'stroke-dasharray':'3 3',opacity:0.85,'class':'late'},svg);
-  cl.style.setProperty('--d','0.35s');
-  /* série observada (anima desenhando) */
+  E('path',{d:dc,fill:'none',stroke:'#7d9bc0','stroke-width':1,'stroke-dasharray':'3 3',opacity:0.8},svg);
+  /* série observada (desenha ao revelar + brilho contínuo) */
   var dobs='M '+cx(0).toFixed(1)+' '+obs(0).toFixed(1);
   for(i=1;i<n;i++) dobs+=' L '+cx(i).toFixed(1)+' '+obs(i).toFixed(1);
-  E('path',{d:dobs,fill:'none',stroke:'#e08982','stroke-width':1.6,'class':'draw','stroke-linejoin':'round'},svg);
-  /* ponto de detecção: 1º fora da banda */
+  E('path',{id:'bstsObs',d:dobs,fill:'none',stroke:'url(#bstsGrad)','stroke-width':1.8,'class':'draw bsts-line','stroke-linejoin':'round','stroke-linecap':'round'},svg);
+  /* ponto luminoso percorrendo a série (contínuo) */
+  var rider=E('circle',{r:2.7,fill:'#ffe6b8','class':'bsts-rider'},svg);
+  var mo=document.createElementNS(SVGNS,'animateMotion');
+  mo.setAttribute('dur','3.4s');mo.setAttribute('repeatCount','indefinite');mo.setAttribute('rotate','auto');mo.setAttribute('calcMode','linear');
+  var mp=document.createElementNS(SVGNS,'mpath');
+  mp.setAttributeNS('http://www.w3.org/1999/xlink','href','#bstsObs');
+  mp.setAttribute('href','#bstsObs');
+  mo.appendChild(mp);rider.appendChild(mo);
+  /* halo pulsante onde a série rompe a banda */
   var dx=cx(SHIFT),dy=obs(SHIFT);
   E('circle',{cx:dx,cy:dy,r:4.5,fill:'none',stroke:'#ff5d4f','stroke-width':1.2,'class':'halo'},svg);
-  var c=E('circle',{cx:dx,cy:dy,r:3,fill:'#ff5d4f','class':'pt'},svg);
+  var c=E('circle',{cx:dx,cy:dy,r:3,fill:'#ff5d4f','class':'pt bsts-pt'},svg);
   c.style.setProperty('--d','1.45s');
   var t=monoText(svg,dx+6,dy-2,'nível ↑','#ff5d4f',7.5,'start');
   t.setAttribute('class','late');t.style.setProperty('--d','1.7s');
