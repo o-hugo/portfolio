@@ -539,8 +539,8 @@ footer{
         </div>
       </div>
       <div class="card-viz">
-        <svg class="viz" data-kind="cusum" viewBox="0 0 200 92" aria-hidden="true"></svg>
-        <div class="figcap mono">fig. 5 · CUSUM · resíduos padronizados</div>
+        <svg class="viz" data-kind="bsts" viewBox="0 0 200 92" aria-hidden="true"></svg>
+        <div class="figcap mono">fig. 5 · BSTS · observado fora da banda</div>
       </div>
     </article>
 
@@ -1035,10 +1035,45 @@ function buildBars(svg){
   var mk=monoText(svg,8+8*15+5,84-42-5,'↑','#e08982',9,'middle');mk.setAttribute('class','late');mk.style.setProperty('--d','1.1s');
 }
 
+function buildBsts(svg){
+  E('line',{x1:4,y1:86,x2:196,y2:86,stroke:'#3a434c'},svg);
+  var n=24,x0=8,x1=192,SHIFT=16,JUMP=17,i;
+  function cx(i){return x0+(x1-x0)*i/(n-1);}
+  function center(i){return 50+2.4*Math.sin(i*0.55)-0.15*i;}
+  function up(i){return center(i)-8;}
+  function lo(i){return center(i)+8;}
+  function obs(i){return center(i)+1.6*Math.sin(i*1.7)-(i>=SHIFT?JUMP:0);}
+  /* banda de previsão (credível) */
+  var d='M '+cx(0).toFixed(1)+' '+up(0).toFixed(1);
+  for(i=1;i<n;i++) d+=' L '+cx(i).toFixed(1)+' '+up(i).toFixed(1);
+  for(i=n-1;i>=0;i--) d+=' L '+cx(i).toFixed(1)+' '+lo(i).toFixed(1);
+  d+=' Z';
+  var band=E('path',{d:d,fill:'#5b86b0','fill-opacity':0.16,stroke:'none','class':'late'},svg);
+  band.style.setProperty('--d','0.2s');
+  /* linha prevista (centro), tracejada */
+  var dc='M '+cx(0).toFixed(1)+' '+center(0).toFixed(1);
+  for(i=1;i<n;i++) dc+=' L '+cx(i).toFixed(1)+' '+center(i).toFixed(1);
+  var cl=E('path',{d:dc,fill:'none',stroke:'#7d9bc0','stroke-width':1,'stroke-dasharray':'3 3',opacity:0.85,'class':'late'},svg);
+  cl.style.setProperty('--d','0.35s');
+  /* série observada (anima desenhando) */
+  var dobs='M '+cx(0).toFixed(1)+' '+obs(0).toFixed(1);
+  for(i=1;i<n;i++) dobs+=' L '+cx(i).toFixed(1)+' '+obs(i).toFixed(1);
+  E('path',{d:dobs,fill:'none',stroke:'#e08982','stroke-width':1.6,'class':'draw','stroke-linejoin':'round'},svg);
+  /* ponto de detecção: 1º fora da banda */
+  var dx=cx(SHIFT),dy=obs(SHIFT);
+  E('circle',{cx:dx,cy:dy,r:4.5,fill:'none',stroke:'#ff5d4f','stroke-width':1.2,'class':'halo'},svg);
+  var c=E('circle',{cx:dx,cy:dy,r:3,fill:'#ff5d4f','class':'pt'},svg);
+  c.style.setProperty('--d','1.45s');
+  var t=monoText(svg,dx+6,dy-2,'nível ↑','#ff5d4f',7.5,'start');
+  t.setAttribute('class','late');t.style.setProperty('--d','1.7s');
+  var lg=monoText(svg,8,12,'BSTS · banda de previsão','#7d9bc0',7,'start');
+  lg.setAttribute('class','late');lg.style.setProperty('--d','0.5s');
+}
+
 (function(){
   document.querySelectorAll('.viz').forEach(function(svg){
     var kind=svg.getAttribute('data-kind');
-    if(kind==='imr')buildIMR(svg);else if(kind==='flow')buildFlow(svg);else if(kind==='cusum')buildCUSUM(svg);else if(kind==='bars')buildBars(svg);
+    if(kind==='imr')buildIMR(svg);else if(kind==='flow')buildFlow(svg);else if(kind==='cusum')buildCUSUM(svg);else if(kind==='bars')buildBars(svg);else if(kind==='bsts')buildBsts(svg);
     svg.__lastPlay=0;
     svg.__play=function(){
       var t=performance.now();if(t-svg.__lastPlay<1400)return;svg.__lastPlay=t;
