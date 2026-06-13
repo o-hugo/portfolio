@@ -528,12 +528,15 @@ footer{
         <p class="card-text">Sistema que combina um modelo estrutural bayesiano (BSTS — tendência local linear + sazonalidade mensal) com CUSUM sobre os resíduos padronizados das previsões de 1 passo, detectando mudanças de patamar sustentadas. Dados censurados.</p>
         <div class="tags">
           <span class="tag" data-k="stack"><i></i>Python</span>
+          <span class="tag" data-k="lib"><i></i>statsmodels</span>
           <span class="tag" data-k="method"><i></i>BSTS</span>
           <span class="tag" data-k="method"><i></i>CUSUM</span>
-          <span class="tag" data-k="method"><i></i>Inf. Bayesiana</span>
           <span class="tag" data-k="ctx"><i></i>Dados Censurados</span>
         </div>
-        <a class="plink mono" href="https://github.com/o-hugo/bsts_bayesian_cusum_monitoring_censored" target="_blank" rel="noopener noreferrer"><span class="lab">Ver Repositório</span><span class="arr">→</span></a>
+        <div class="card-actions">
+          <button class="case-btn mono" data-case="p05" type="button"><span class="dot"></span>estudo de caso</button>
+          <a class="plink mono" href="https://github.com/o-hugo/bsts_bayesian_cusum_monitoring_censored" target="_blank" rel="noopener noreferrer"><span class="lab">Repositório</span><span class="arr">→</span></a>
+        </div>
       </div>
       <div class="card-viz">
         <svg class="viz" data-kind="cusum" viewBox="0 0 200 92" aria-hidden="true"></svg>
@@ -1130,6 +1133,30 @@ function buildBars(svg){
 
   /* ── conteúdo dos estudos de caso ── */
   var CASES={
+    p05:{
+      title:'Monitoramento Bayesiano de Séries Temporais',
+      foot:'dados sintéticos · estrutura estatística preservada · implementação em statsmodels',
+      phases:[
+        {tag:'estruturação',title:'Indicadores mensais e exploração',
+         text:'Indicadores operacionais mensais consolidados em formato colunar (<code>parquet</code>). Suavização local (LOESS) e visualizações exploratórias revelam tendência, sazonalidade e candidatos a mudança de patamar.',
+         viz:pills(['parquet colunar','LOESS','log nas durações','janela consistente'])+note('Desafios: escalas heterogêneas (milhares × dezenas) e cobertura histórica desigual.')},
+        {tag:'bsts',title:'Modelo estrutural bayesiano',
+         text:'Modelo estrutural de séries temporais com <b>tendência local linear</b> (nível e inclinação adaptativos) e <b>sazonalidade de 12 meses</b>. Dele extraem-se os erros de previsão de 1 passo, que alimentam a detecção.',
+         viz:pills(['tendência local linear','sazonalidade 12m','erro de previsão 1-passo'])+note('Pedra angular: apertar os <code>priors</code> de nível e inclinação — com priors frouxos, o degrau era absorvido pela própria tendência.')},
+        {tag:'detecção',title:'CUSUM bilateral calibrado',
+         text:'Carta CUSUM bilateral sobre os resíduos padronizados, com referência <code>k = 0,5σ</code> e Fast Initial Response. O limite de decisão <code>h</code> é calibrado para um ARL₀-alvo (taxa de falso alarme controlada).',
+         viz:metrics([['k = 0,5σ','referência'],['ARL₀','calibra h'],['FIR','início rápido']])+note('Regra operacional: |δ̂| ≥ 1σ indica mudança de patamar; abaixo disso, comportamento transiente.')},
+        {tag:'robustez',title:'Variantes e diagnósticos',
+         text:'Três variantes de CUSUM rodam em paralelo para resistência a outliers, somadas a testes de brancura dos resíduos.',
+         viz:pills(['CUSUM tabular','winsorizada ±3σ','baseada em postos','Ljung-Box','ACF / PACF'])},
+        {tag:'operação',title:'Pipeline generalizado',
+         text:'O pipeline é aplicado a 8 séries (2 unidades × 4 indicadores), separando Fase I (calibração) de Fase II (monitoramento). A saída é um painel mensal com veredito, momento do evento e magnitude.',
+         viz:metrics([['8','séries'],['Fase I','calibração'],['Fase II','16 meses']])},
+        {tag:'resultados',title:'3 alarmes, zero falsos positivos',
+         text:'Em três séries foram injetadas mudanças de patamar e cinco permaneceram estáveis. O sistema detectou exatamente as três, sem nenhum alarme falso.',
+         viz:dist([['Finalizados',48,'+4,8σ'],['Em tramitação',27,'−2,7σ'],['Duração',19,'+1,9σ']])+note('3 verdadeiros positivos · 5 séries estáveis · 0 falsos alarmes.')}
+      ]
+    },
     p02:{
       title:'Pipeline ETL de Dados Médicos',
       foot:'dados sintéticos e anonimizados · estrutura idêntica ao caso real',
